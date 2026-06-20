@@ -887,7 +887,7 @@
       }
       .foot-bottom {
         border-top: 1px solid var(--hairline-soft);
-        padding: 22px 0 40px;
+        padding: 22px 0 14px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -896,6 +896,18 @@
         font-family: var(--font-sans);
         font-size: 13px;
         color: var(--ink-secondary);
+      }
+      .foot-note {
+        padding: 0 0 40px;
+        font-family: var(--font-sans);
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--ink-secondary);
+        opacity: 0.85;
+      }
+      .foot-note a {
+        text-decoration: underline;
+        text-underline-offset: 2px;
       }
       .ext::after {
         content: " ↗";
@@ -1361,6 +1373,12 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
           <span>© 2026 Distributed Robotics Group · Protocol Institute</span>
           <span>Built in public · Open source · Accelerating order</span>
         </div>
+
+        <p class="foot-note">
+          Brand assets — logos, marks, icons and the Protocol Institute P-mark — are from the
+          <a href="https://github.com/pi-drg/yakrobot-protocols-brandkit" target="_blank" rel="noopener">YakRobot Protocols brand kit</a>.
+          © 2026 Protocol Institute. All rights reserved.
+        </p>
       </div>
     </footer>
 
