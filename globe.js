@@ -93,7 +93,7 @@
 
   var world;
   try {
-    var res = await fetch("/land-110m.json");
+    var res = await fetch("land-110m.json");
     if (!res.ok) return; /* land map unavailable — skip the globe rather than throw */
     world = await res.json();
   } catch (err) {
