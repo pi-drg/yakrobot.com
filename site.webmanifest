@@ -1,0 +1,14 @@
+{
+  "name": "YakRobot Protocols",
+  "short_name": "YakRobot",
+  "description": "Open-source protocol stack for decentralized, distributed robotics — a project of the Distributed Robotics Group at the Protocol Institute.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9f8f5",
+  "theme_color": "#0064ff",
+  "icons": [
+    { "src": "assets/brand/icon/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "assets/brand/icon/icon-512.png", "type": "image/png", "sizes": "512x512" },
+    { "src": "assets/brand/icon/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+  ]
+}

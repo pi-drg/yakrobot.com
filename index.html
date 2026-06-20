@@ -13,7 +13,20 @@
     <meta property="og:title" content="YakRobot Protocols — Distributed Robotics Group · Protocol Institute" />
     <meta property="og:description" content="Building one robot is an engineering challenge; getting two or more to coordinate is a protocol problem. The open-source protocol stack for decentralized, distributed robotics." />
     <meta property="og:site_name" content="YakRobot Protocols" />
+    <meta property="og:image" content="assets/brand/social/og-image-1200x630.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="assets/brand/social/og-image-1200x630.png" />
+
+    <!-- Brand icons (YakRobot Protocols brand kit) -->
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/favicon/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="assets/brand/favicon/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon/favicon-64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/icon/apple-touch-icon-180.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <meta name="theme-color" content="#0064ff" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -222,18 +235,10 @@
         gap: 11px;
         color: var(--ink-dark);
       }
-      .brand .pmark {
-        width: 26px;
-        height: 29px;
-        color: var(--ink-dark);
+      .brand .brand-symbol {
+        width: 30px;
+        height: 30px;
         flex: none;
-      }
-      .brand .pmark path {
-        stroke: currentColor;
-        stroke-width: 46;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
       }
       .brand-name {
         font-family: var(--font-serif);
@@ -285,10 +290,37 @@
         overflow: hidden;
       }
       .hero-grid {
-        display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
-        gap: 56px;
+        display: flex;
         align-items: center;
+        justify-content: space-between;
+        gap: 56px;
+      }
+      .hero-content {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 600px;
+      }
+      .hero-mark {
+        flex: 0 0 auto;
+      }
+      .hero-headline {
+        display: flex;
+        align-items: stretch;
+        gap: 20px;
+      }
+      .hero-headline .hero-symbol {
+        flex: none;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        padding-right: 20px;
+        border-right: 1px solid var(--hairline);
+      }
+      .hero-headline .hero-symbol img {
+        width: 96px;
+        height: 96px;
+        object-fit: contain;
+        display: block;
       }
       .hero h1 {
         font-size: clamp(48px, 7vw, 82px);
@@ -347,11 +379,11 @@
       /* hero P-mark draw-on signature */
       .hero-mark {
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
       }
       .hero-mark svg {
-        width: min(360px, 80%);
+        width: clamp(300px, 40vw, 460px);
         height: auto;
         color: var(--primary);
       }
@@ -873,8 +905,12 @@
       /* ============ responsive ============ */
       @media (max-width: 980px) {
         .hero-grid {
-          grid-template-columns: 1fr;
+          flex-direction: column;
+          align-items: flex-start;
           gap: 36px;
+        }
+        .hero-content {
+          max-width: none;
         }
         .hero-mark {
           order: -1;
@@ -948,28 +984,7 @@
     <header class="nav">
       <div class="wrap nav-inner">
         <a class="brand" href="#top" aria-label="YakRobot Protocols — home">
-          <svg class="pmark" viewBox="125 205 670 747" aria-hidden="true">
-            <g transform="rotate(180, 500, 500) scale(-1, 1) translate(-1000, 0)">
-              <path
-                d="M 676.970 676.855
-C 579.388 774.437 420.613 774.439 323.030 676.856
-C 312.127 665.954 302.514 654.254 294.048 641.995
-L 197.681 641.995
-L 197.681 724.133
-C 197.681 738.504 186.029 750.156 171.657 750.156
-C 157.287 750.156 145.634 738.504 145.634 724.133
-L 145.634 94.293
-C 145.634 79.919 157.287 68.270 171.657 68.270
-C 186.029 68.270 197.681 79.919 197.681 94.293
-L 197.681 589.949
-L 266.574 589.949
-C 232.183 500.423 250.957 394.987 323.030 322.915
-C 420.611 225.333 579.387 225.334 676.969 322.916
-C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
-              />
-              <path d="M 359.832 640.054 C 437.120 717.341 562.879 717.342 640.168 640.053 C 717.455 562.767 717.455 437.006 640.167 359.719" />
-            </g>
-          </svg>
+          <img class="brand-symbol" src="assets/brand/logo/yakrobot-symbol.png" width="30" height="30" alt="" aria-hidden="true" />
           <span class="brand-name">
             YakRobot
             <b>Protocols</b>
@@ -990,17 +1005,24 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
     <!-- ============ HERO ============ -->
     <section class="hero">
       <div class="wrap hero-grid">
-        <div>
+        <div class="hero-content">
           <p class="eyebrow">
             <a href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Distributed Robotics Group</a> ·
             <a href="https://protocol-institute.org/" target="_blank" rel="noopener">Protocol Institute</a>
           </p>
-          <h1>
-            YakRobot
-            <br />
-            Protocols
-          </h1>
-          <p class="tagline">Coordinating robots.</p>
+          <div class="hero-headline">
+            <span class="hero-symbol">
+              <img src="assets/brand/logo/yakrobot-symbol.png" alt="YakRobot Protocols symbol" />
+            </span>
+            <div>
+              <h1>
+                YakRobot
+                <br />
+                Protocols
+              </h1>
+              <p class="tagline">Coordinating robots.</p>
+            </div>
+          </div>
           <p class="hero-lead">An open-source protocol stack for decentralized, distributed robotics — identity, command, marketplace, attestation and fleet security. Engineered as arguments, then tested on real robots, wherever they run.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#stack">Explore the stack</a>
