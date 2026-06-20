@@ -729,6 +729,8 @@ body > *:not(script) { position: relative; z-index: 1; }
   .fab { display: none; }
   .breadcrumb-notes { display: block; }
   .topic-section { padding: 40px 0; }
+  /* Wide data tables scroll inside their own box so the page never scrolls sideways */
+  .topic-section table { display: block; width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   /* Contact as bottom sheet on mobile */
   .contact-overlay.visible { align-items: flex-end; }
   .contact-box {
