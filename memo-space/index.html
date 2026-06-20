@@ -763,6 +763,32 @@ body > *:not(script) { position: relative; z-index: 1; }
   .topic-section::before { display: none !important; }
   .topic-section { border: none !important; padding: 20px 0 !important; }
   section { page-break-inside: avoid; }
+  .relay-hero { display: none !important; }
+}
+
+/* ---- Earth–Moon cislunar relay hero ---- */
+.relay-hero {
+  position: relative;
+  width: 100%;
+  margin: 6px 0 2px;
+  overflow: hidden;
+}
+.relay-stage {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.relay-stage svg { display: block; width: 100%; height: auto; }
+@keyframes rl-flow { to { stroke-dashoffset: -120; } }
+.rl-link { animation: rl-flow 5s linear infinite; }
+.rl-link.alt { animation-duration: 2.6s; }
+@keyframes rl-tw { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+.rl-twinkle { animation: rl-tw 2.6s ease-in-out infinite; }
+@media (max-width: 600px) {
+  .relay-stage { padding: 0 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rl-link, .rl-twinkle { animation: none !important; }
 }
 </style>
 </head>
@@ -791,7 +817,7 @@ body > *:not(script) { position: relative; z-index: 1; }
       <span class="brand-mark"><img src="yakrobot-symbol.png" alt="YakRobot Protocols" width="40" height="40"></span>
       <h1>YakRobot Protocols</h1>
     </div>
-    <div class="meta">Space Economy Brief &mdash; April 2026</div>
+    <div class="meta">Space Economy Brief &mdash; June 2026</div>
   </header>
 
   <div class="subtitle-row">
@@ -952,6 +978,10 @@ body > *:not(script) { position: relative; z-index: 1; }
     <h2 id="vision">Vision</h2>
     <p>Every tier &mdash; terrestrial and orbital &mdash; is a multi-operator market with the same unsolved problem: there is no standard way for a customer (human or software agent) to post a task, receive bids from qualified operators, verify the delivery, and pay. Today this runs on bilateral contracts that take months. YakRobot Protocols is the missing layer &mdash; identity, security, discovery, payments, and marketplace &mdash; open and identical across domains. We earn the right to coordinate robots in orbit and on the Moon by first coordinating them where the market already exists: on Earth. The protocol stays constant; only the verification engine and credential extensions change per environment.</p>
 
+    <div class="relay-hero" aria-hidden="true">
+      <div class="relay-stage" id="relay-stage"></div>
+    </div>
+
     <h3>Expanding Outward, One Environment at a Time</h3>
     <table>
       <tr><th>Stage</th><th>Environment</th><th>Initial segments</th></tr>
@@ -988,7 +1018,7 @@ body > *:not(script) { position: relative; z-index: 1; }
     <span><a href="https://yakrobot.com" target="_blank">YakRobot Protocols</a> &mdash; Space Economy Brief</span>
     <span>Demo: <a href="https://yakrobot.bid/demo" target="_blank">yakrobot.bid/demo</a> &mdash; NASA: <a href="https://www.nasa.gov/architecture" target="_blank">nasa.gov/architecture</a> &mdash; Code: <a href="https://github.com/YakRoboticsGarage/" target="_blank">github.com/YakRoboticsGarage</a></span>
   </div>
-  <p class="footnote" style="text-align:center;padding-bottom:24px">Background images courtesy of <a href="https://images.nasa.gov" target="_blank">NASA Image and Video Library</a>.</p>
+  <p class="footnote" style="text-align:center;padding-bottom:24px">Background images courtesy of <a href="https://images.nasa.gov" target="_blank">NASA Image and Video Library</a> and <a href="https://unsplash.com/s/photos/moon" target="_blank">Unsplash</a>.</p>
 </div>
 
 <div class="fab">
@@ -1516,6 +1546,10 @@ function submitContact() {
 
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 </script>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script defer src="space-relay.js"></script>
 
 </body>
 </html>
