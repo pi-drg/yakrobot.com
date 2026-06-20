@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YakRobot Protocols — Distributed Robotics Group · Protocol Institute</title>
+    <meta
+      name="description"
+      content="Open-source protocols for onchain robotics. Identity, command, marketplace, attestation and cryptographic security for autonomous robots — built and tested on real robots by the Distributed Robotics Group at the Protocol Institute."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="YakRobot Protocols — Distributed Robotics Group · Protocol Institute" />
+    <meta property="og:description" content="Building one robot is an engineering challenge; getting two or more to coordinate is a protocol problem. The open-source protocol stack for decentralized, distributed robotics." />
+    <meta property="og:site_name" content="YakRobot Protocols" />
+    <meta property="og:image" content="/assets/brand/social/og-image-1200x630.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/assets/brand/social/og-image-1200x630.png" />
+
+    <!-- Brand icons (YakRobot Protocols brand kit) -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/favicon/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/brand/favicon/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/assets/brand/favicon/favicon-64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/icon/apple-touch-icon-180.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0064ff" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="/land-110m.json" as="fetch" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <style>
+      /* ============ Protocolized brand tokens ============ */
+      :root {
+        /* brand */
+        --primary: #0064ff; /* electric cobalt — brand primary */
+        --primary-pressed: #004fcc;
+        --primary-light-bg: #e6efff;
+        --on-primary: #ffffff;
+
+        /* secondary (forest green) */
+        --secondary: #0f6e56;
+        --secondary-deep: #085041;
+        --secondary-light-bg: #e1f5ee;
+
+        /* accent (warm rust) */
+        --accent: #d85a30;
+        --accent-bg: #faece7;
+
+        /* surface */
+        --canvas: #f9f8f5;
+        --surface-white: #ffffff;
+        --surface-muted: #f3f4f6;
+        --hairline: #e5e7eb;
+        --hairline-soft: #f3f4f6;
+
+        /* text */
+        --ink-dark: #2c2c2a;
+        --ink-secondary: #5f5e5a;
+
+        /* type */
+        --font-serif: "Instrument Serif", Georgia, serif;
+        --font-body: "Lora", Georgia, serif;
+        --font-sans: "Outfit", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-pill: 9999px;
+
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+        --maxw: 1120px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink-dark);
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      /* serif display defaults — always weight 400 (editorial restraint) */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-serif);
+        font-weight: 400;
+        margin: 0;
+        letter-spacing: -0.01em;
+        line-height: 1.05;
+      }
+
+      .wrap {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .sans {
+        font-family: var(--font-sans);
+      }
+      .mono {
+        font-family: var(--font-mono);
+      }
+
+      /* eyebrow label */
+      .eyebrow {
+        font-family: var(--font-sans);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-secondary);
+      }
+      .eyebrow a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+        transition: color 0.15s ease;
+      }
+      .eyebrow a:hover {
+        color: var(--primary);
+      }
+
+      /* ============ buttons ============ */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5em;
+        font-family: var(--font-sans);
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 1.5;
+        border-radius: var(--radius-md);
+        padding: 12px 24px;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease,
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: var(--on-primary);
+      }
+      .btn-primary:hover {
+        background: var(--primary-pressed);
+      }
+      .btn-secondary {
+        background: transparent;
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+      .btn-secondary:hover {
+        background: var(--primary-light-bg);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink-dark);
+        border-color: var(--hairline);
+      }
+      .btn-ghost:hover {
+        border-color: var(--ink-secondary);
+      }
+      .link-arrow {
+        font-family: var(--font-sans);
+        font-size: 14px;
+        color: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+      }
+      .link-arrow:hover {
+        color: var(--primary-pressed);
+      }
+      .link-arrow .a {
+        transition: transform 0.15s ease;
+      }
+      .link-arrow:hover .a {
+        transform: translateX(3px);
+      }
+
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      /* ============ top nav ============ */
+      header.nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.86);
+        backdrop-filter: saturate(140%) blur(8px);
+        border-bottom: 1px solid var(--hairline);
+      }
+      .nav-inner {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--ink-dark);
+      }
+      .brand .brand-symbol {
+        width: 30px;
+        height: 30px;
+        flex: none;
+      }
+      .brand-name {
+        font-family: var(--font-serif);
+        font-size: 21px;
+        line-height: 1;
+        letter-spacing: -0.01em;
+      }
+      .brand-name b {
+        font-weight: 400;
+      }
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .navlinks a {
+        font-family: var(--font-sans);
+        font-size: 14px;
+        color: var(--ink-dark);
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition:
+          color 0.15s ease,
+          background 0.15s ease;
+      }
+      .navlinks a:hover {
+        color: var(--primary);
+      }
+      .navlinks a.nav-cta {
+        margin-left: 6px;
+        padding: 8px 16px;
+        background: var(--ink-dark);
+        color: #fff;
+        border-radius: var(--radius-md);
+      }
+      .navlinks a.nav-cta:hover {
+        background: #000;
+        color: #fff;
+      }
+      .menu-btn {
+        display: none;
+      }
+
+      /* ============ hero ============ */
+      .hero {
+        padding: 96px 0 84px;
+        border-bottom: 1px solid var(--hairline-soft);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-grid {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 56px;
+      }
+      .hero-content {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 600px;
+      }
+      .hero-mark {
+        flex: 0 0 auto;
+      }
+      .hero-headline {
+        display: flex;
+        align-items: stretch;
+        gap: 20px;
+      }
+      .hero-headline .hero-symbol {
+        flex: none;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        padding-right: 20px;
+        border-right: 1px solid var(--hairline);
+      }
+      .hero-headline .hero-symbol img {
+        width: 96px;
+        height: 96px;
+        object-fit: contain;
+        display: block;
+      }
+      .hero h1 {
+        font-size: clamp(48px, 7vw, 82px);
+        letter-spacing: -0.025em;
+        line-height: 0.96;
+      }
+      .tagline {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: clamp(24px, 3.2vw, 32px);
+        color: var(--primary);
+        line-height: 1.15;
+        margin-top: 14px;
+      }
+      .hero-lead {
+        font-family: var(--font-body);
+        font-size: 18px;
+        line-height: 1.62;
+        color: var(--ink-secondary);
+        max-width: 46ch;
+        margin: 22px 0 30px;
+      }
+      .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .hero-meta {
+        margin-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 22px;
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--ink-secondary);
+      }
+      .hero-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--secondary);
+        flex: none;
+      }
+      .dot.blue {
+        background: var(--primary);
+      }
+      .dot.rust {
+        background: var(--accent);
+      }
+
+      /* hero P-mark draw-on signature */
+      .hero-mark {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      .hero-mark svg {
+        width: clamp(300px, 40vw, 460px);
+        height: auto;
+        color: var(--primary);
+      }
+      .hero-mark .draw {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 14;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .hero-mark .shape-outer {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        animation: drawStroke 2.2s cubic-bezier(0.37, 0, 0.63, 1) forwards;
+      }
+      .hero-mark .shape-inner {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        animation: drawStroke 1.2s cubic-bezier(0.37, 0, 0.63, 1) 0.35s forwards;
+      }
+      @keyframes drawStroke {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* ============ thesis pull-quote ============ */
+      .thesis {
+        background: var(--canvas);
+      }
+      .thesis .wrap {
+        padding: 64px 24px;
+      }
+      .thesis blockquote {
+        margin: 0;
+        max-width: 880px;
+        font-family: var(--font-serif);
+        font-size: clamp(28px, 4vw, 40px);
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        color: var(--ink-dark);
+      }
+      .thesis blockquote .accent {
+        color: var(--primary);
+      }
+      .thesis cite {
+        display: block;
+        margin-top: 22px;
+        font-family: var(--font-sans);
+        font-style: normal;
+        font-size: 14px;
+        color: var(--ink-secondary);
+      }
+
+      /* ============ generic section ============ */
+      section.band {
+        padding: 80px 0;
+      }
+      .sec-head {
+        max-width: 760px;
+        margin-bottom: 44px;
+      }
+      .sec-head h2 {
+        font-size: clamp(30px, 4.4vw, 44px);
+        letter-spacing: -0.02em;
+        margin-top: 12px;
+      }
+      .sec-head p {
+        font-family: var(--font-body);
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--ink-secondary);
+        margin: 16px 0 0;
+      }
+
+      /* ============ protocol stack grid ============ */
+      .stack-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .pcard {
+        background: var(--surface-white);
+        border: 1px solid var(--hairline);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease,
+          transform 0.15s ease;
+      }
+      .pcard:hover {
+        border-color: var(--primary);
+        box-shadow: var(--shadow-sm);
+        transform: translateY(-2px);
+      }
+      .pcard .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .layer {
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--ink-secondary);
+      }
+      .badge {
+        font-family: var(--font-sans);
+        font-size: 11.5px;
+        font-weight: 500;
+        border-radius: var(--radius-pill);
+        padding: 2px 11px;
+        white-space: nowrap;
+      }
+      .badge.shipped {
+        background: var(--secondary-light-bg);
+        color: var(--secondary-deep);
+      }
+      .badge.design {
+        background: var(--accent-bg);
+        color: var(--accent);
+      }
+      .pcard h3 {
+        font-size: 22px;
+        line-height: 1.12;
+      }
+      .pcard p {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--ink-secondary);
+      }
+      .pcard .repo {
+        margin-top: auto;
+        padding-top: 6px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+      }
+      .pcard .repo:hover {
+        color: var(--primary-pressed);
+      }
+      .pcard .repo.soon {
+        color: var(--ink-secondary);
+      }
+      .btn.is-soon {
+        background: transparent;
+        color: var(--ink-secondary);
+        border-color: var(--hairline);
+        cursor: default;
+      }
+      .btn.is-soon:hover {
+        background: transparent;
+        color: var(--ink-secondary);
+        border-color: var(--hairline);
+      }
+      .foot-col span.soon {
+        display: block;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        color: var(--ink-secondary);
+        opacity: 0.7;
+        padding: 5px 0;
+      }
+      .stack-foot {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+      }
+
+      /* ============ platform / videos ============ */
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .vcard {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .vframe {
+        position: relative;
+        aspect-ratio: 16/9;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        border: 1px solid var(--hairline);
+        background: #000;
+      }
+      .vframe iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+      .vcard h3 {
+        font-size: 20px;
+        line-height: 1.15;
+      }
+      .vcard .cap {
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--ink-secondary);
+      }
+
+      /* ============ discovery / network ============ */
+      .disc {
+        background: var(--surface-white);
+        border-top: 1px solid var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+      }
+      .disc-grid {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 56px;
+        align-items: center;
+      }
+      .disc h2 {
+        font-size: clamp(30px, 4.4vw, 44px);
+        letter-spacing: -0.02em;
+      }
+      .disc p {
+        font-family: var(--font-body);
+        font-size: 17px;
+        line-height: 1.62;
+        color: var(--ink-secondary);
+        margin: 18px 0 0;
+        max-width: 46ch;
+      }
+      .disc-stats {
+        display: flex;
+        gap: 34px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+      .stat .n {
+        font-family: var(--font-serif);
+        font-size: 42px;
+        line-height: 1;
+        color: var(--ink-dark);
+      }
+      .stat .l {
+        font-family: var(--font-sans);
+        font-size: 12.5px;
+        color: var(--ink-secondary);
+        margin-top: 6px;
+      }
+      .globe-wrap {
+        position: relative;
+        border: 1px solid var(--hairline);
+        border-radius: var(--radius-lg);
+        background: radial-gradient(130% 130% at 50% 28%, #ffffff 0%, var(--canvas) 72%);
+        padding: 14px;
+        overflow: hidden;
+      }
+      #globe-container {
+        width: 100%;
+        position: relative;
+        z-index: 1;
+      }
+      #globe-container svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      /* Protocol Institute mark, drawn faintly behind the globe to tie the network to the protocol theme */
+      .globe-mark {
+        position: absolute;
+        inset: 14px;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .globe-mark svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .globe-mark path {
+        fill: none;
+        stroke: var(--primary);
+        stroke-width: 7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        opacity: 0;
+        animation: globeMarkDraw 9s ease-in-out infinite;
+      }
+      .globe-mark .pm-inner {
+        animation-delay: 0.6s;
+      }
+      @keyframes globeMarkDraw {
+        0% {
+          stroke-dashoffset: 1;
+          opacity: 0;
+        }
+        14% {
+          opacity: 0.14;
+        }
+        55% {
+          stroke-dashoffset: 0;
+          opacity: 0.14;
+        }
+        82% {
+          stroke-dashoffset: 0;
+          opacity: 0.14;
+        }
+        100% {
+          stroke-dashoffset: 0;
+          opacity: 0;
+        }
+      }
+      .globe-legend {
+        position: absolute;
+        left: 20px;
+        bottom: 14px;
+        z-index: 2;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-secondary);
+      }
+      .globe-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .globe-legend i {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .globe-legend i.site {
+        background: var(--primary);
+      }
+      .globe-legend i.sig {
+        background: var(--accent);
+      }
+
+      /* ============ DRG block ============ */
+      .drg-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 48px;
+        align-items: start;
+      }
+      .drg-lead {
+        font-family: var(--font-body);
+        font-size: 18px;
+        line-height: 1.62;
+        color: var(--ink-secondary);
+        margin: 18px 0 0;
+      }
+      .drg-lead .em {
+        color: var(--ink-dark);
+        font-style: italic;
+      }
+      .factcard {
+        background: var(--surface-white);
+        border: 1px solid var(--hairline);
+        border-radius: var(--radius-lg);
+        padding: 28px;
+      }
+      .fact {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--hairline-soft);
+      }
+      .fact:last-of-type {
+        border-bottom: 0;
+      }
+      .fact .k {
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-secondary);
+      }
+      .fact .v {
+        font-family: var(--font-body);
+        font-size: 16px;
+        color: var(--ink-dark);
+      }
+      .fact .v a {
+        color: var(--primary);
+      }
+      .factcard .btn {
+        width: 100%;
+        justify-content: center;
+        margin-top: 18px;
+      }
+
+      /* ============ final cta ============ */
+      .cta {
+        background: var(--surface-white);
+        border-top: 1px solid var(--hairline-soft);
+      }
+      .cta .wrap {
+        padding: 88px 24px;
+        text-align: center;
+      }
+      .cta h2 {
+        font-size: clamp(30px, 5vw, 52px);
+        letter-spacing: -0.025em;
+        line-height: 1.02;
+        max-width: 18ch;
+        margin: 0 auto;
+      }
+      .cta h2 .accent {
+        color: var(--primary);
+      }
+      .cta p {
+        font-family: var(--font-body);
+        font-size: 18px;
+        color: var(--ink-secondary);
+        margin: 20px auto 30px;
+        max-width: 52ch;
+      }
+      .cta .row {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* ============ footer ============ */
+      footer.site {
+        background: var(--surface-white);
+        border-top: 1px solid var(--hairline);
+      }
+      .foot-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 36px;
+        padding: 64px 0 40px;
+      }
+      .foot-brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 14px;
+        color: var(--ink-dark);
+      }
+      .foot-brand .pmark {
+        width: 24px;
+        height: 27px;
+      }
+      .foot-brand .pmark path {
+        stroke: currentColor;
+        stroke-width: 46;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .foot-blurb {
+        font-family: var(--font-body);
+        font-size: 14.5px;
+        line-height: 1.6;
+        color: var(--ink-secondary);
+        max-width: 34ch;
+      }
+      .foot-col h4 {
+        font-family: var(--font-sans);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-secondary);
+        margin-bottom: 14px;
+      }
+      .foot-col a {
+        display: block;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        color: var(--ink-secondary);
+        padding: 5px 0;
+      }
+      .foot-col a:hover {
+        color: var(--primary);
+      }
+      .foot-bottom {
+        border-top: 1px solid var(--hairline-soft);
+        padding: 22px 0 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--ink-secondary);
+      }
+      .foot-note {
+        padding: 0 0 40px;
+        font-family: var(--font-sans);
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--ink-secondary);
+        opacity: 0.85;
+      }
+      .foot-note a {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .ext::after {
+        content: " ↗";
+        color: var(--ink-secondary);
+      }
+
+      /* ============ responsive ============ */
+      @media (max-width: 980px) {
+        .hero-grid {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 36px;
+        }
+        .hero-content {
+          max-width: none;
+        }
+        .hero-mark {
+          order: -1;
+          align-self: center;
+        }
+        .hero-mark svg {
+          width: 200px;
+        }
+        .stack-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .video-grid {
+          grid-template-columns: 1fr;
+          max-width: 560px;
+        }
+        .disc-grid {
+          grid-template-columns: 1fr;
+          gap: 34px;
+        }
+        .drg-grid {
+          grid-template-columns: 1fr;
+          gap: 30px;
+        }
+        .foot-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 30px;
+        }
+      }
+      @media (max-width: 640px) {
+        .navlinks {
+          display: none;
+        }
+        .hero {
+          padding: 64px 0 56px;
+        }
+        .stack-grid {
+          grid-template-columns: 1fr;
+        }
+        .foot-grid {
+          grid-template-columns: 1fr;
+        }
+        .disc-stats {
+          gap: 24px;
+        }
+        section.band {
+          padding: 60px 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .hero-mark .shape-outer,
+        .hero-mark .shape-inner {
+          animation: none;
+          stroke-dashoffset: 0;
+        }
+        .globe-mark path {
+          animation: none;
+          stroke-dashoffset: 0;
+          opacity: 0.08;
+        }
+        * {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============ NAV ============ -->
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="brand" href="#top" aria-label="YakRobot Protocols — home">
+          <img class="brand-symbol" src="/assets/brand/logo/yakrobot-symbol.png" width="30" height="30" alt="" aria-hidden="true" />
+          <span class="brand-name">
+            YakRobot
+            <b>Protocols</b>
+          </span>
+        </a>
+        <nav class="navlinks" aria-label="Primary">
+          <a href="#stack">Protocol Stack</a>
+          <a href="#platform">Platform</a>
+          <a href="#discovery">Discovery</a>
+          <a href="#drg">The Group</a>
+          <a class="nav-cta sans" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Join DRG</a>
+        </nav>
+      </div>
+    </header>
+
+    <a id="top"></a>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-content">
+          <p class="eyebrow">
+            <a href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Distributed Robotics Group</a> ·
+            <a href="https://protocol-institute.org/" target="_blank" rel="noopener">Protocol Institute</a>
+          </p>
+          <div class="hero-headline">
+            <span class="hero-symbol">
+              <img src="/assets/brand/logo/yakrobot-symbol.png" alt="YakRobot Protocols symbol" />
+            </span>
+            <div>
+              <h1>
+                YakRobot
+                <br />
+                Protocols
+              </h1>
+              <p class="tagline">Coordinating robots.</p>
+            </div>
+          </div>
+          <p class="hero-lead">An open-source protocol stack for decentralized, distributed robotics — identity, command, marketplace, attestation and fleet security. Engineered as arguments, then tested on real robots, wherever they run.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#stack">Explore the stack</a>
+            <a class="btn btn-secondary" href="https://protocol-institute.org/" target="_blank" rel="noopener">Join the community</a>
+          </div>
+          <div class="hero-meta">
+            <span>
+              <i class="dot blue"></i>
+              6 composable protocols
+            </span>
+            <span>
+              <i class="dot rust"></i>
+              Code coming soon
+            </span>
+            <span>
+              <i class="dot"></i>
+              Biweekly · Thursdays 4:30pm UTC
+            </span>
+          </div>
+        </div>
+        <div class="hero-mark" aria-hidden="true">
+          <svg viewBox="125 205 670 747" role="img" aria-label="Protocol Institute mark">
+            <g transform="rotate(180, 500, 500) scale(-1, 1) translate(-1000, 0)">
+              <path
+                class="draw shape-outer"
+                pathLength="1"
+                d="M 676.970 676.855
+C 579.388 774.437 420.613 774.439 323.030 676.856
+C 312.127 665.954 302.514 654.254 294.048 641.995
+L 197.681 641.995
+L 197.681 724.133
+C 197.681 738.504 186.029 750.156 171.657 750.156
+C 157.287 750.156 145.634 738.504 145.634 724.133
+L 145.634 94.293
+C 145.634 79.919 157.287 68.270 171.657 68.270
+C 186.029 68.270 197.681 79.919 197.681 94.293
+L 197.681 589.949
+L 266.574 589.949
+C 232.183 500.423 250.957 394.987 323.030 322.915
+C 420.611 225.333 579.387 225.334 676.969 322.916
+C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
+              />
+              <path class="draw shape-inner" pathLength="1" d="M 359.832 640.054 C 437.120 717.341 562.879 717.342 640.168 640.053 C 717.455 562.767 717.455 437.006 640.167 359.719" />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ THESIS ============ -->
+    <section class="thesis">
+      <div class="wrap">
+        <blockquote>
+          Building one robot is an engineering challenge; getting two or more to coordinate is a
+          <span class="accent">protocol problem.</span>
+        </blockquote>
+        <cite>The thesis of the Distributed Robotics Group</cite>
+      </div>
+    </section>
+
+    <!-- ============ PROTOCOL STACK ============ -->
+    <section class="band" id="stack" style="background: var(--surface-white); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline)">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="eyebrow">What we're building</p>
+          <h2>The protocol stack</h2>
+          <p>Full-stack open-source infrastructure for autonomous decentralized, distributed robots — from on-chip cryptography to on-chain identity. Each layer is a separate, composable protocol.</p>
+        </div>
+
+        <div class="stack-grid">
+          <article class="pcard">
+            <div class="top"><span class="layer">Identity</span></div>
+            <h3>ERC-8004 Robot Identity</h3>
+            <p>On-chain discovery and identity for robots. Each robot gets a verifiable, decentralized identity anchored to hardware via ATECC608B secure elements.</p>
+            <span class="repo soon">Coming soon</span>
+          </article>
+
+          <article class="pcard">
+            <div class="top"><span class="layer">Gateway</span></div>
+            <h3>MCP Command Gateway</h3>
+            <p>A FastAPI + Model Context Protocol gateway. LLMs discover, command and query robots in natural language, through per-robot isolated instances.</p>
+            <span class="repo soon">Coming soon</span>
+          </article>
+
+          <article class="pcard">
+            <div class="top"><span class="layer">Marketplace</span></div>
+            <h3>Robot Task Marketplace</h3>
+            <p>A decentralized marketplace for robot work. Post a job, robots bid, results are verified on-chain with zero-knowledge proofs of sensor-data integrity.</p>
+            <a class="repo" href="https://yakrobot.bid/demo" target="_blank" rel="noopener">Live demo ↗</a>
+          </article>
+
+          <article class="pcard">
+            <div class="top">
+              <span class="layer">Cryptography</span>
+              <span class="badge design">In design</span>
+            </div>
+            <h3>ZK Sensor Attestation</h3>
+            <p>KZG polynomial commitments for batch sensor attestation. Provably honest robots, without revealing raw telemetry.</p>
+            <span class="repo soon">Coming soon</span>
+          </article>
+
+          <article class="pcard">
+            <div class="top">
+              <span class="layer">Fleet Security</span>
+              <span class="badge design">In design</span>
+            </div>
+            <h3>2-of-3 Fleet Protocol</h3>
+            <p>Multi-sig fleet management on Safe&#123;Wallet&#125; — operator, hardware and recovery keys. No single point of failure across the swarm.</p>
+            <span class="repo soon">Coming soon</span>
+          </article>
+
+          <article class="pcard">
+            <div class="top"><span class="layer">Hardware</span></div>
+            <h3>ESP32-S3 Tumbller Reference Platform</h3>
+            <p>Our first reference platform: a self-balancing differential-drive robot with SimpleFOC motor control. More platforms are on the way to be integrated.</p>
+            <span class="repo soon">Coming soon</span>
+          </article>
+        </div>
+
+        <div class="stack-foot">
+          <span class="btn btn-ghost sans is-soon">⚙ Full protocol spec · coming soon</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLATFORM ============ -->
+    <section class="band wrap" id="platform">
+      <div class="sec-head">
+        <p class="eyebrow">See it in action</p>
+        <h2>The YakRobot platform</h2>
+        <p>Protocols are engineered arguments — so they get tested on real robots. Here is the stack running on hardware, end to end.</p>
+      </div>
+      <div class="video-grid">
+        <div class="vcard">
+          <div class="vframe">
+            <iframe src="https://www.youtube-nocookie.com/embed/EOzxPFScjYs?rel=0" title="Demo: LLM-controlled robot" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>LLM-Controlled Robot</h3>
+          <p class="cap">Commanding a robot in natural language through the MCP gateway.</p>
+        </div>
+        <div class="vcard">
+          <div class="vframe">
+            <iframe src="https://www.youtube-nocookie.com/embed/IeVmOE_XT0E?rel=0" title="Demo: robot task auction engine" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>Task Auction Engine</h3>
+          <p class="cap">Robots bidding on posted jobs in the task marketplace. <a class="ext" href="https://yakrobot.bid/demo" target="_blank" rel="noopener">Try the live demo</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DISCOVERY ============ -->
+    <section class="disc" id="discovery">
+      <div class="wrap band">
+        <div class="disc-grid">
+          <div>
+            <p class="eyebrow">The network</p>
+            <h2>Robots, across the planet</h2>
+            <p>
+              Every robot registers a verifiable identity on-chain, then discovers its peers through the same registry. Machines find each other, agree on work, and prove what they did —
+              no central operator, no single point of failure.
+            </p>
+            <p>One registry. Many sites. Decentralized robots on locations that already span continents, speaking the same protocol wherever it runs.</p>
+            <div class="disc-stats">
+              <div class="stat">
+                <div class="n">5</div>
+                <div class="l">Robot sites online</div>
+              </div>
+              <div class="stat">
+                <div class="n">6</div>
+                <div class="l">Composable protocols</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="globe-wrap">
+            <div class="globe-mark" aria-hidden="true">
+              <svg viewBox="0 0 700 700">
+                <g transform="translate(395,340) scale(1.08) translate(-500,-500)">
+                  <g transform="rotate(180, 500, 500) scale(-1, 1) translate(-1000, 0)">
+                    <path
+                      class="pm-outer"
+                      pathLength="1"
+                      d="M 676.970 676.855
+C 579.388 774.437 420.613 774.439 323.030 676.856
+C 312.127 665.954 302.514 654.254 294.048 641.995
+L 197.681 641.995
+L 197.681 724.133
+C 197.681 738.504 186.029 750.156 171.657 750.156
+C 157.287 750.156 145.634 738.504 145.634 724.133
+L 145.634 94.293
+C 145.634 79.919 157.287 68.270 171.657 68.270
+C 186.029 68.270 197.681 79.919 197.681 94.293
+L 197.681 589.949
+L 266.574 589.949
+C 232.183 500.423 250.957 394.987 323.030 322.915
+C 420.611 225.333 579.387 225.334 676.969 322.916
+C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
+                    />
+                    <path class="pm-inner" pathLength="1" d="M 359.832 640.054 C 437.120 717.341 562.879 717.342 640.168 640.053 C 717.455 562.767 717.455 437.006 640.167 359.719" />
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div id="globe-container" aria-hidden="true"></div>
+            <div class="globe-legend" aria-hidden="true">
+              <span>
+                <i class="site"></i>
+                Robot site
+              </span>
+              <span>
+                <i class="sig"></i>
+                Signal
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DRG ============ -->
+    <section class="band wrap" id="drg">
+      <div class="drg-grid">
+        <div>
+          <p class="eyebrow">Who builds this</p>
+          <h2 style="font-size: clamp(30px, 4.4vw, 44px); letter-spacing: -0.02em">Distributed Robotics Group</h2>
+          <p class="drg-lead">
+            DRG is an applied research group at the Protocol Institute. Half its focus is on the robot coordination protocols themselves; the other half is on building the robots to test them.
+            <span class="em">Protocols are engineered arguments</span>
+            — so DRG engineers and tests robot protocols on real robots.
+          </p>
+          <p class="drg-lead">
+            It studies how decentralized coordination, blockchain infrastructure, robotics and physical AI intersect to create a new class of protocol-design challenges. Anyone curious about onchain robotics is welcome at the table.
+          </p>
+        </div>
+
+        <aside class="factcard">
+          <div class="fact">
+            <span class="k">Convenors</span>
+            <span class="v">Anuraj R. &amp; Rafael Fernandez</span>
+          </div>
+          <div class="fact">
+            <span class="k">Cadence</span>
+            <span class="v">Biweekly · Thursdays, 4:30pm UTC</span>
+          </div>
+          <div class="fact">
+            <span class="k">Home</span>
+            <span class="v"><a href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener" class="ext">Protocol Institute · SIGs</a></span>
+          </div>
+          <div class="fact">
+            <span class="k">Code</span>
+            <span class="v" style="color: var(--ink-secondary)">Coming soon</span>
+          </div>
+          <a class="btn btn-primary sans" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Join DRG</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="cta">
+      <div class="wrap">
+        <h2>
+          One open protocol.
+          <br />
+          <span class="accent">Every robot on it.</span>
+        </h2>
+        <p>All code, all hardware designs, all protocols — open source. Come build the coordination layer for the next generation of robots.</p>
+        <div class="row">
+          <a class="btn btn-primary" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Join DRG</a>
+          <span class="btn btn-secondary is-soon">Code coming soon</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="site">
+      <div class="wrap">
+        <div class="foot-grid">
+          <div>
+            <div class="foot-brand">
+              <svg class="pmark" viewBox="125 205 670 747" aria-hidden="true">
+                <g transform="rotate(180, 500, 500) scale(-1, 1) translate(-1000, 0)">
+                  <path
+                    d="M 676.970 676.855
+C 579.388 774.437 420.613 774.439 323.030 676.856
+C 312.127 665.954 302.514 654.254 294.048 641.995
+L 197.681 641.995
+L 197.681 724.133
+C 197.681 738.504 186.029 750.156 171.657 750.156
+C 157.287 750.156 145.634 738.504 145.634 724.133
+L 145.634 94.293
+C 145.634 79.919 157.287 68.270 171.657 68.270
+C 186.029 68.270 197.681 79.919 197.681 94.293
+L 197.681 589.949
+L 266.574 589.949
+C 232.183 500.423 250.957 394.987 323.030 322.915
+C 420.611 225.333 579.387 225.334 676.969 322.916
+C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
+                  />
+                  <path d="M 359.832 640.054 C 437.120 717.341 562.879 717.342 640.168 640.053 C 717.455 562.767 717.455 437.006 640.167 359.719" />
+                </g>
+              </svg>
+              <span class="brand-name">
+                YakRobot
+                <b>Protocols</b>
+              </span>
+            </div>
+            <p class="foot-blurb">The open-source protocol stack for decentralized, distributed robotics. A project of the Distributed Robotics Group at the Protocol Institute.</p>
+          </div>
+
+          <div class="foot-col">
+            <h4>Protocols</h4>
+            <a href="#stack">Identity</a>
+            <a href="#stack">MCP Gateway</a>
+            <a href="#stack">Marketplace</a>
+            <a href="#stack">Full spec</a>
+          </div>
+
+          <div class="foot-col">
+            <h4>Pages</h4>
+            <a href="#stack">Protocol Stack</a>
+            <a href="#platform">Platform</a>
+            <a href="#discovery">Discovery</a>
+            <a href="#drg">The Group</a>
+          </div>
+
+          <div class="foot-col">
+            <h4>Links</h4>
+            <a class="ext" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Protocol Institute</a>
+            <a class="ext" href="https://www.yakcollective.org/study-groups/yak-robotics-garage" target="_blank" rel="noopener">Yak Collective</a>
+            <span class="soon">Code · coming soon</span>
+          </div>
+        </div>
+
+        <div class="foot-bottom">
+          <span>© 2026 Distributed Robotics Group · Protocol Institute</span>
+          <span>Built in public · Open source · Accelerating order</span>
+        </div>
+
+        <p class="foot-note">
+          Brand assets — logos, marks, icons and the Protocol Institute P-mark — are from the
+          <a href="https://github.com/pi-drg/yakrobot-protocols-brandkit" target="_blank" rel="noopener">YakRobot Protocols brand kit</a>.
+          © 2026 Protocol Institute. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- ===== Globe libraries (same stack the animation is built on) ===== -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <script defer src="/globe.js"></script>
+  </body>
+</html>
