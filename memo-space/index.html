@@ -792,6 +792,9 @@ body > *:not(script) { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) {
   .rl-link, .rl-twinkle { animation: none !important; }
 }
+
+/* Notes/feedback disabled until wired to our own Cloudflare Worker (see NOTES_ENABLED in JS) */
+.breadcrumb-notes, .fab, .sel-bar, .sel-popover { display: none !important; }
 </style>
 </head>
 <body>
@@ -1202,9 +1205,13 @@ window.copyAsMarkdown = function() {
 };
 
 var API = 'https://yakrobot-api.rafaeldf2.workers.dev';
+// Notes/feedback is disabled until it is wired to our own Cloudflare Worker.
+// Flip to true (and update API + remove the .breadcrumb-notes/.fab hide rule in CSS) to re-enable.
+var NOTES_ENABLED = false;
 var panelOpen = false;
 
 function togglePanel() {
+  if (!NOTES_ENABLED) return;
   if (window.innerWidth <= 768) {
     showFeedbackDrawer();
     return;
@@ -1315,15 +1322,18 @@ function loadComments() {
   }).catch(function() {});
 }
 
-fetch(API + '/api/memo/comments').then(function(r) { return r.json(); }).then(function(d) {
-  document.getElementById('commentBadge').textContent = (d.comments || []).length;
-}).catch(function() {});
+if (NOTES_ENABLED) {
+  fetch(API + '/api/memo/comments').then(function(r) { return r.json(); }).then(function(d) {
+    document.getElementById('commentBadge').textContent = (d.comments || []).length;
+  }).catch(function() {});
+}
 
 var currentHighlight = '';
 var currentSection = '';
 var selRect = null;
 
 document.addEventListener('mouseup', function(e) {
+  if (!NOTES_ENABLED) return;
   var bar = document.getElementById('selBar');
   var pop = document.getElementById('selPopover');
   if (bar.contains(e.target) || pop.contains(e.target) || document.getElementById('feedbackPanel').contains(e.target)) return;
