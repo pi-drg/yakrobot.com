@@ -795,6 +795,21 @@ body > *:not(script) { position: relative; z-index: 1; }
 
 /* Notes/feedback disabled until wired to our own Cloudflare Worker (see NOTES_ENABLED in JS) */
 .breadcrumb-notes, .fab, .sel-bar, .sel-popover { display: none !important; }
+/* Contact ("Get in Touch") also disabled until our Worker is ready (see CONTACT_ENABLED in JS) */
+.cta-center { display: none !important; }
+
+/* Header action rendered as a button */
+.header-btn {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm); line-height: 1.4;
+  color: var(--color-cobalt-bright);
+  background: rgba(0,100,255,0.10);
+  border: 1px solid var(--color-blue-border);
+  border-radius: 6px; padding: 6px 14px;
+  text-decoration: none; cursor: pointer;
+  transition: all var(--ease-fast);
+}
+.header-btn:hover { background: rgba(0,100,255,0.18); border-color: var(--color-cobalt-bright); color: #fff; text-decoration: none; }
 </style>
 </head>
 <body>
@@ -828,8 +843,7 @@ body > *:not(script) { position: relative; z-index: 1; }
   <div class="subtitle-row">
     <p class="subtitle">Open protocols for robot coordination and infrastructure in the space economy &mdash; identity, discovery, teleoperation, autonomous agents, and marketplace &mdash; for satellites, space stations, rovers, ISRU units, and the Moon Base. Built in public, available to all.</p>
     <div class="header-actions cta-touch-desktop">
-      <a href="javascript:void(0)" onclick="copyAsMarkdown()" id="copyMdBtn" class="header-link">Copy as Markdown</a>
-      <a href="javascript:void(0)" onclick="showContact()" class="header-link">Get in Touch</a>
+      <a href="javascript:void(0)" onclick="copyAsMarkdown()" id="copyMdBtn" class="header-btn">Copy as Markdown</a>
     </div>
   </div>
 </div>
@@ -1208,6 +1222,8 @@ var API = 'https://yakrobot-api.rafaeldf2.workers.dev';
 // Notes/feedback is disabled until it is wired to our own Cloudflare Worker.
 // Flip to true (and update API + remove the .breadcrumb-notes/.fab hide rule in CSS) to re-enable.
 var NOTES_ENABLED = false;
+// Contact ("Get in Touch") disabled until wired to our own Cloudflare Worker.
+var CONTACT_ENABLED = false;
 var panelOpen = false;
 
 function togglePanel() {
@@ -1468,6 +1484,7 @@ function refreshComments() {
 }
 
 function showContact() {
+  if (!CONTACT_ENABLED) return;
   var overlay = document.getElementById('contactOverlay');
   overlay.classList.add('visible');
   document.getElementById('contactName').value = '';
