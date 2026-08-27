@@ -19,3 +19,37 @@ that permission.
 
 Brand kit and full terms:
     https://github.com/pi-drg/yakrobot-protocols-brandkit
+
+
+----------------------------------------------------------------------------
+THIRD-PARTY — robots-as-protocol-citizens/assets/
+----------------------------------------------------------------------------
+
+Two images in the workshop page are third-party works, redistributed under
+their own licence and NOT under the Apache License:
+
+    robots-as-protocol-citizens/assets/robot-3q.jpg
+    robots-as-protocol-citizens/assets/robot-top.jpg
+
+    © Freenove. Product renders extracted from the Freenove 4WD Smart Car Kit
+    for Raspberry Pi tutorial, with the app-UI overlay masked out of the
+    three-quarter view.
+
+    Licensed CC BY-NC-SA 3.0 — attribution, NON-COMMERCIAL, share-alike.
+    https://creativecommons.org/licenses/by-nc-sa/3.0/
+    https://github.com/Freenove/Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi
+
+    The attribution and licence link in that page's <figcaption> are required
+    by the licence and must not be removed. Because the licence is
+    non-commercial, these two files cannot be reused for commercial purposes.
+
+The remaining artwork in that directory —
+
+    art-cube.jpg, hero-stack.jpg, fnd-erc.jpg, fnd-freenove.jpg,
+    fnd-symposium.jpg, fnd-yak.jpg, og-card.png, pi-mark.svg, favicon.svg
+
+— is Protocol Institute house artwork and brand marks, and falls under the
+same exception as assets/brand/ above:
+
+    © 2026 Protocol Institute. All rights reserved.
+

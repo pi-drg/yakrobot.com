@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG card source</title>
+<meta name="robots" content="noindex">
+<!-- Source for assets/og-card.png. Regenerate:
+     python3 -m http.server 8771   (from this directory)
+     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu \
+       --hide-scrollbars --force-device-scale-factor=2 --window-size=1200,630 \
+       --screenshot="$PWD/assets/og-card.png" --virtual-time-budget=6000 \
+       "http://localhost:8771/_og-card.html"
+     sips -z 630 1200 assets/og-card.png --out assets/og-card.png -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1200px;height:630px;overflow:hidden;background:#02113c}
+  .card{position:relative;width:1200px;height:630px;overflow:hidden;
+    font-family:"Outfit",system-ui,sans-serif;color:#fff}
+  .bg{position:absolute;inset:0;background:url('assets/hero-stack.jpg') center right/cover no-repeat}
+  .bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(2,11,38,.97) 0%,rgba(2,11,38,.90) 42%,rgba(2,11,38,.42) 100%)}
+  .inner{position:relative;height:100%;padding:66px 70px;display:flex;flex-direction:column;justify-content:space-between}
+  .eyebrow{font-size:19px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#9dc4ff}
+  h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:82px;line-height:1.02;
+    letter-spacing:-.015em;margin:26px 0 14px;max-width:15ch}
+  .sub{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-size:37px;color:#9dc4ff;line-height:1.15}
+  .meta{display:flex;gap:11px;flex-wrap:wrap}
+  .chip{font-size:19px;padding:9px 19px;border-radius:9999px;background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.20);color:#eaf1ff}
+  .chip b{font-weight:600;color:#fff}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .brand{display:flex;align-items:center;gap:13px}
+  /* the mark is dark cobalt; force it white for the navy ground */
+  .brand img{height:31px;width:auto;display:block;filter:brightness(0) invert(1)}
+  .brand span{font-family:"Instrument Serif",Georgia,serif;font-size:26px;color:#fff}
+  .url{font-size:19px;color:rgba(255,255,255,.62)}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="bg"></div>
+  <div class="inner">
+    <div>
+      <div class="eyebrow">2026 Protocol Symposium · New Nature</div>
+      <h1>Robots as Protocol Citizens</h1>
+      <div class="sub">A distributed robotics workshop.</div>
+    </div>
+    <div class="meta">
+      <span class="chip"><b>4 sessions</b> · two days · online</span>
+      <span class="chip"><b>Your robot</b> · build it, keep it</span>
+      <span class="chip">Identity · Marketplace · MCP</span>
+    </div>
+    <div class="foot">
+      <div class="brand">
+        <img src="assets/pi-mark.svg" alt="">
+        <span>The Protocol Institute</span>
+      </div>
+      <div class="url">Distributed Robotics Research Group</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
