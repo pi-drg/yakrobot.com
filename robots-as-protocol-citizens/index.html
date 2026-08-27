@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robots as Protocol Citizens — Assembling One Into the YakRover Stack · 2026 Protocol Symposium</title>
+<meta name="description" content="A hands-on workshop where you go from a box of parts to a robot with an on-chain identity, listed on a public marketplace and driven remotely over MCP. Four sessions across two days at the 2026 Protocol Symposium (New Nature). Hosted by the Distributed Robotics Research Group, Protocol Institute.">
+
+<link rel="canonical" href="https://yakrobot.com/robots-as-protocol-citizens/">
+<meta name="theme-color" content="#02113c">
+
+<!-- Social card. og:image MUST be absolute — scrapers do not resolve relative
+     URLs. Update all four if this page ever moves to another path or host. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Protocol Institute">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://yakrobot.com/robots-as-protocol-citizens/">
+<meta property="og:title" content="Robots as Protocol Citizens — a distributed robotics workshop">
+<meta property="og:description" content="Go from a box of parts to a robot with its own on-chain identity, discoverable on a public marketplace and drivable over MCP. Four sessions across two days at the 2026 Protocol Symposium.">
+<meta property="og:image" content="https://yakrobot.com/robots-as-protocol-citizens/assets/og-card.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Robots as Protocol Citizens — a distributed robotics workshop. 2026 Protocol Symposium, New Nature.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Robots as Protocol Citizens — a distributed robotics workshop">
+<meta name="twitter:description" content="From a box of parts to a robot with an on-chain identity, discoverable on a marketplace and drivable over MCP. Four sessions, two days, 2026 Protocol Symposium.">
+<meta name="twitter:image" content="https://yakrobot.com/robots-as-protocol-citizens/assets/og-card.png">
+<meta name="twitter:image:alt" content="Robots as Protocol Citizens — a distributed robotics workshop. 2026 Protocol Symposium, New Nature.">
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================================
+   Protocol Institute brand — Institute vein (cobalt), tuned to the hero artwork.
+   Three roles, kept strictly separate:
+     cobalt  #0064ff  links, eyebrows, numerals, focus  (brand primary)
+     indigo  #092cba  labels and metadata              (sampled from the hero art)
+     rust    #d85a30  conversion CTAs and highlights   (brand accent)
+   Indigo and the deep ground #02113c are both pulled from art_1's palette in the
+   brand kit's metadata.json, which is the documented way to harmonize a layout
+   with its chosen artwork.
+   ============================================================================ */
+:root{
+  --pi-action-primary:#0064ff; --pi-action-primary-pressed:#004fcc; --pi-action-primary-tint:#e6efff;
+  --pi-indigo:#092cba; --pi-indigo-tint:#e5e9fa;
+  /* accent-strong is a derived step: bare rust carries only 3.87:1 under white,
+     so it cannot fill a 16px button. Same fix the kit already made for
+     accent-deep (rust-as-text). #c04b22 = 4.92:1 white text, and 3.72:1 against
+     the navy ground so the button keeps its own boundary. */
+  --pi-accent:#d85a30; --pi-accent-strong:#c04b22; --pi-accent-deep:#9e3d18; --pi-accent-tint:#faece7;
+  --pi-bg-canvas:#f9f8f5; --pi-bg-surface:#ffffff; --pi-bg-muted:#f3f4f6;
+  --pi-hairline:#e5e7eb;
+  --pi-text-heading:#2c2c2a; --pi-text-body:#2c2c2a; --pi-text-secondary:#5f5e5a;
+  --pi-on-action:#ffffff;
+  /* dark-surface contract */
+  --pi-surface-dark:#02113c; --pi-surface-dark-2:#060d24;
+  --pi-on-dark:#ffffff; --pi-on-dark-muted:rgba(255,255,255,.86); --pi-on-dark-line:rgba(255,255,255,.18);
+  --pi-on-dark-accent:#9dc4ff;
+  --pi-serif:"Instrument Serif",Georgia,serif;
+  --pi-body:"Lora",Georgia,serif;
+  --pi-sans:"Outfit",system-ui,sans-serif;
+  --pi-radius-md:8px; --pi-radius-lg:12px; --pi-radius-pill:9999px;
+  --pi-shadow-hover:0 1px 3px 0 rgb(0 0 0 / .10), 0 1px 2px -1px rgb(0 0 0 / .10);
+  --maxw:1040px; --topbar:60px;
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ margin:0; background:var(--pi-bg-canvas); color:var(--pi-text-body);
+  font-family:var(--pi-body); font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+
+h1,h2,h3,h4{ font-family:var(--pi-serif); font-weight:400; color:var(--pi-text-heading);
+  letter-spacing:-.01em; line-height:1.08; margin:0 0 .4em; text-wrap:balance; }
+p,li{ text-wrap:pretty; }
+h1{ font-size:clamp(40px,6.2vw,70px); }
+h2{ font-size:clamp(30px,4vw,42px); }
+h3{ font-size:24px; }
+h4{ font-size:19px; }
+p{ margin:0 0 1em; }
+strong{ font-weight:700; color:var(--pi-text-heading); }
+em{ font-style:italic; }
+a{ color:var(--pi-action-primary); text-decoration:none; }
+a:hover{ text-decoration:underline; }
+img{ max-width:100%; }
+code{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.88em;
+  background:var(--pi-bg-muted); padding:1px 6px; border-radius:5px; color:var(--pi-text-heading); }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; }
+.eyebrow{ font-family:var(--pi-sans); font-size:13px; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--pi-action-primary); margin:0 0 14px; display:block; }
+.lead{ font-family:var(--pi-body); font-size:20px; line-height:1.55; color:var(--pi-text-secondary); }
+
+/* — Top bar — */
+header.nav{ position:fixed; inset:0 0 auto 0; height:var(--topbar); z-index:100;
+  background:rgba(249,248,245,.9); backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid var(--pi-hairline); }
+.nav-inner{ max-width:var(--maxw); margin:0 auto; height:var(--topbar); padding:0 28px; display:flex; align-items:center;
+  justify-content:space-between; gap:18px; }
+.wordmark{ display:inline-flex; align-items:center; gap:9px; }
+.wordmark img{ height:22px; width:auto; display:block; }
+.wordmark .wm{ font-family:var(--pi-serif); font-size:18px; color:var(--pi-text-heading); white-space:nowrap; }
+.nav-right{ display:flex; align-items:center; gap:14px; }
+.nav-cta{ font-family:var(--pi-sans); font-size:13px; font-weight:600; letter-spacing:.04em; color:var(--pi-on-action);
+  background:var(--pi-accent-strong); padding:9px 18px; border-radius:var(--pi-radius-md); }
+.nav-cta:hover{ background:var(--pi-accent-deep); text-decoration:none; }
+.hamburger{ display:none; width:38px; height:34px; border:1px solid var(--pi-hairline); border-radius:8px;
+  background:transparent; cursor:pointer; padding:0; align-items:center; justify-content:center; flex-direction:column; gap:4px; }
+.hamburger span{ display:block; width:18px; height:2px; background:var(--pi-text-heading); transition:.2s; }
+.hamburger[aria-expanded="true"] span:nth-child(1){ transform:translateY(6px) rotate(45deg); }
+.hamburger[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+.hamburger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-6px) rotate(-45deg); }
+.mobile-menu{ display:none; flex-direction:column; background:var(--pi-bg-surface); border-bottom:1px solid var(--pi-hairline); }
+.mobile-menu.open{ display:flex; }
+.mobile-menu a{ font-family:var(--pi-sans); font-size:15px; font-weight:500; color:var(--pi-text-heading);
+  padding:14px 28px; border-top:1px solid var(--pi-hairline); }
+.mobile-menu a:hover{ background:var(--pi-bg-muted); text-decoration:none; }
+.mobile-menu a.cta{ color:var(--pi-accent-deep); font-weight:600; }
+
+/* — Left-gutter scroll-spy nav — */
+.gutter{ position:fixed; top:50%; left:max(16px, calc((100vw - var(--maxw))/2 - 176px)); transform:translateY(-50%);
+  z-index:40; display:none; flex-direction:column; gap:1px; }
+@media(min-width:1240px){ .gutter{ display:flex; } }
+.gutter a{ font-family:var(--pi-sans); font-size:12px; font-weight:500; color:var(--pi-text-secondary); padding:5px 12px;
+  border-left:2px solid transparent; white-space:nowrap; line-height:1.3; transition:color .2s; }
+.gutter a:hover{ color:var(--pi-text-heading); text-decoration:none; }
+.gutter a.active{ color:var(--pi-text-heading); border-left-color:var(--pi-action-primary); }
+.gutter.on-dark a{ color:rgba(255,255,255,.72); }
+.gutter.on-dark a:hover{ color:#fff; }
+.gutter.on-dark a.active{ color:#fff; border-left-color:var(--pi-on-dark-accent); }
+
+/* — Buttons — */
+/* `color` on the base class (not just the modifiers) so the global a{color}
+   rule can never leak cobalt text onto a button. */
+.btn{ font-family:var(--pi-sans); font-size:16px; font-weight:500; line-height:1.4; padding:13px 26px;
+  border-radius:var(--pi-radius-md); border:1px solid transparent; cursor:pointer; display:inline-flex;
+  align-items:center; gap:8px; text-decoration:none; color:var(--pi-text-heading);
+  transition:background .14s,border-color .14s,color .14s; }
+.btn:hover{ text-decoration:none; }
+.btn--primary{ background:var(--pi-action-primary); color:var(--pi-on-action); }
+.btn--primary:hover{ background:var(--pi-action-primary-pressed); }
+.btn--cta{ background:var(--pi-accent-strong); color:var(--pi-on-action); border-color:var(--pi-accent-strong); }
+.btn--cta:hover{ background:var(--pi-accent-deep); border-color:var(--pi-accent-deep); }
+/* On a dark ground the green fill is only 2.95:1 against the surface, under the
+   3:1 WCAG needs for a UI component boundary — a light border supplies it. */
+/* accent-strong holds 3.72:1 against the navy ground and 4.9:1 against the white
+   form card, so the resting fill is its own boundary on both surfaces. The
+   hover fill (accent-deep) is only 2.73:1 on navy, so on dark surfaces a light
+   ring supplies the boundary instead. */
+.hero .btn--cta:hover, .dark .btn--cta:hover{ box-shadow:0 0 0 2px rgba(255,255,255,.6); }
+.btn--ghost{ background:transparent; color:#fff; border-color:rgba(255,255,255,.55); }
+.btn--ghost:hover{ background:rgba(255,255,255,.14); }
+.btn--secondary{ background:transparent; color:var(--pi-action-primary); border-color:var(--pi-action-primary); }
+.btn--secondary:hover{ background:var(--pi-action-primary-tint); }
+
+/* — Chips / badges — */
+.chip{ font-family:var(--pi-sans); font-size:13px; padding:6px 13px; border-radius:var(--pi-radius-pill);
+  background:var(--pi-bg-muted); color:var(--pi-text-secondary); display:inline-flex; align-items:center; gap:7px; }
+.chip b{ color:var(--pi-text-heading); font-weight:600; }
+.badge{ font-family:var(--pi-sans); font-size:12px; font-weight:600; letter-spacing:.04em; padding:3px 11px;
+  border-radius:var(--pi-radius-pill); display:inline-block; background:var(--pi-action-primary-tint); color:var(--pi-action-primary-pressed); }
+
+/* — HERO — */
+.hero{ position:relative; overflow:hidden; border-bottom:1px solid var(--pi-hairline); margin-top:var(--topbar); }
+.hero-bg{ position:absolute; inset:0; background:var(--pi-surface-dark) center/cover no-repeat; }
+.hero-bg::after{ content:""; position:absolute; inset:0;
+  background:
+    linear-gradient(90deg, rgba(2,11,38,.95) 0%, rgba(2,11,38,.80) 46%, rgba(2,11,38,.30) 100%),
+    linear-gradient(180deg, rgba(2,11,38,.35) 0%, rgba(2,11,38,.22) 38%, rgba(3,8,24,.82) 100%); }
+@media(max-width:760px){ .hero-bg::after{ background:linear-gradient(180deg, rgba(2,11,38,.82) 0%, rgba(2,11,38,.72) 40%, rgba(3,8,24,.92) 100%); } }
+.hero-inner{ position:relative; max-width:var(--maxw); margin:0 auto; padding:92px 28px 80px; color:var(--pi-on-dark); }
+.hero .eyebrow{ color:var(--pi-on-dark-accent); }
+.hero h1{ color:var(--pi-on-dark); max-width:none; }
+.hero .tagline{ font-family:var(--pi-serif); font-style:italic; font-size:clamp(21px,2.8vw,30px);
+  line-height:1.15; color:var(--pi-on-dark-accent); margin:.1em 0 .5em; max-width:26ch; }
+.hero .lead{ color:var(--pi-on-dark-muted); max-width:46ch; }
+.hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-top:30px; }
+.hero-meta{ display:flex; gap:10px; flex-wrap:wrap; margin-top:34px; }
+.hero-meta .chip{ background:rgba(255,255,255,.12); color:#eaf1ff; border:1px solid var(--pi-on-dark-line); }
+.hero-meta .chip b{ color:#fff; }
+
+/* — Sections — */
+section{ padding:80px 0; border-bottom:1px solid var(--pi-hairline); scroll-margin-top:var(--topbar); }
+section.tight{ padding:60px 0; }
+.sec-surface{ background:var(--pi-bg-surface); }
+.section-head{ max-width:50ch; margin:0 auto 40px; text-align:center; }
+.section-head .lead{ margin:0 auto; }
+/* A long `.oneline` heading is wider than the 50ch head, and a nowrap line that
+   overflows spills to the right instead of staying centred. Widen the head for
+   those, and keep the lead at a readable measure. */
+.section-head--wide{ max-width:70ch; }
+.section-head--wide .lead{ max-width:52ch; }
+
+/* — Grids / cards — */
+.grid{ display:grid; gap:20px; }
+.g2{ grid-template-columns:repeat(2,1fr); }
+.g3{ grid-template-columns:repeat(3,1fr); }
+.g4{ grid-template-columns:repeat(4,1fr); }
+@media(max-width:860px){ .g3,.g4{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:600px){ .g2,.g3,.g4{ grid-template-columns:1fr; } }
+.card{ background:var(--pi-bg-surface); border:1px solid var(--pi-hairline); border-radius:var(--pi-radius-md);
+  padding:24px; transition:box-shadow .14s,border-color .14s; }
+.sec-surface .card{ background:var(--pi-bg-canvas); }
+.card:hover{ box-shadow:var(--pi-shadow-hover); }
+.card .num{ font-family:var(--pi-serif); font-size:30px; color:var(--pi-action-primary); line-height:1; }
+.card h4{ margin:.5em 0 .35em; }
+.card p{ font-size:15px; color:var(--pi-text-secondary); margin:0; line-height:1.5; }
+.card p + p{ margin-top:.7em; }
+/* No uppercase transform here — these are protocol names, and `x402` is
+   canonically lowercase. */
+.card .spec{ font-family:var(--pi-sans); font-size:12.5px; font-weight:600; letter-spacing:.04em;
+  color:var(--pi-indigo); display:block; margin-top:14px; }
+/* equal-height layer cards, so the protocol labels line up along the bottom */
+#stack .card{ display:flex; flex-direction:column; }
+#stack .card p{ text-wrap:wrap; }
+#stack .card .spec{ margin-top:auto; padding-top:14px; }
+
+/* — Two-column split — */
+.split{ display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center; }
+@media(max-width:860px){ .split{ grid-template-columns:1fr; gap:30px; } }
+.split img{ width:100%; border-radius:var(--pi-radius-lg); border:1px solid var(--pi-hairline); display:block; }
+.figure-cap{ font-family:var(--pi-sans); font-size:12.5px; color:var(--pi-text-secondary); margin-top:10px; line-height:1.5; }
+
+@media(min-width:761px){ .oneline{ white-space:nowrap; } }
+.dbr{ display:none; }
+@media(min-width:940px){ .dbr{ display:inline; } }
+
+/* — Tick lists — */
+ul.ticks{ list-style:none; margin:0; padding:0; }
+ul.ticks li{ position:relative; padding-left:30px; margin-bottom:14px; line-height:1.5; }
+ul.ticks li::before{ content:""; position:absolute; left:0; top:9px; width:14px; height:14px; border-radius:var(--pi-radius-pill);
+  background:var(--pi-accent-tint); box-shadow:inset 0 0 0 2px var(--pi-accent); }
+ul.ticks li b{ color:var(--pi-text-heading); }
+.ticks-2{ display:grid; grid-template-columns:1fr 1fr; gap:0 44px; max-width:880px; margin:0 auto; }
+@media(max-width:680px){ .ticks-2{ grid-template-columns:1fr; } }
+
+/* — Sessions — */
+.daylabel{ font-family:var(--pi-sans); font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--pi-indigo); background:var(--pi-indigo-tint); border-radius:var(--pi-radius-pill);
+  padding:6px 15px; display:inline-block; margin:34px 0 6px; }
+.daylabel:first-of-type{ margin-top:0; }
+.daylabel .sub{ color:var(--pi-text-secondary); font-weight:500; letter-spacing:.04em; text-transform:none; }
+.session{ display:grid; grid-template-columns:150px 1fr; gap:24px; padding:22px 0; border-top:1px solid var(--pi-hairline); }
+@media(max-width:600px){ .session{ grid-template-columns:1fr; gap:8px; } }
+.session .when{ font-family:var(--pi-sans); font-size:13px; font-weight:600; letter-spacing:.04em;
+  text-transform:uppercase; color:var(--pi-action-primary); }
+.session .when .sub{ display:block; font-weight:400; text-transform:none; letter-spacing:0;
+  color:var(--pi-text-secondary); font-size:13px; margin-top:4px; }
+.session h4{ margin:0 0 .3em; }
+.session p{ font-size:15px; color:var(--pi-text-secondary); margin:0; }
+
+/* — Bill of materials — */
+.bom{ display:grid; gap:14px; max-width:880px; margin:0 auto; }
+.bom-row{ display:grid; grid-template-columns:34px 1fr 128px; gap:20px; align-items:start;
+  background:var(--pi-bg-surface); border:1px solid var(--pi-hairline); border-radius:var(--pi-radius-md); padding:20px 22px; }
+.sec-surface .bom-row{ background:var(--pi-bg-canvas); }
+@media(max-width:640px){ .bom-row{ grid-template-columns:34px 1fr; } .bom-row .price{ grid-column:2; text-align:left; } }
+.bom-row .n{ font-family:var(--pi-serif); font-size:26px; line-height:1; color:var(--pi-action-primary); }
+.bom-row h4{ font-size:18px; margin:0 0 .3em; }
+.bom-row p{ font-size:14.5px; color:var(--pi-text-secondary); margin:0 0 .5em; line-height:1.55; }
+.bom-row .links{ display:flex; gap:16px; flex-wrap:wrap; }
+.bom-row .links a{ font-family:var(--pi-sans); font-size:13px; font-weight:500; }
+.bom-row .price{ font-family:var(--pi-sans); font-size:14px; font-weight:600; color:var(--pi-text-heading); text-align:right; }
+.bom-row .price .u{ display:block; font-weight:400; font-size:12px; color:var(--pi-text-secondary); margin-top:3px; letter-spacing:.02em; }
+.bom-total{ display:flex; justify-content:space-between; align-items:baseline; gap:20px; flex-wrap:wrap;
+  border-top:2px solid var(--pi-text-heading); padding-top:16px; margin-top:4px; }
+.bom-total .l{ font-family:var(--pi-sans); font-size:14px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+.bom-total .v{ font-family:var(--pi-serif); font-size:30px; color:var(--pi-text-heading); }
+
+/* — Product shots (Freenove, CC BY-NC-SA) — */
+.shots{ margin:0 0 44px; }
+.shots .shot{ background:var(--pi-bg-surface); border:1px solid var(--pi-hairline);
+  border-radius:var(--pi-radius-lg); overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.shots .shot img{ display:block; width:100%; height:100%; object-fit:contain; max-height:340px; }
+.shots .shot--dark{ background:#0b0b0d; border-color:#26262b; }
+.shots{ display:grid; grid-template-columns:1.35fr 1fr; gap:18px; align-items:stretch; }
+@media(max-width:720px){ .shots{ grid-template-columns:1fr; } }
+.shots figcaption{ grid-column:1/-1; font-family:var(--pi-sans); font-size:12.5px;
+  color:var(--pi-text-secondary); line-height:1.55; margin-top:2px; }
+
+/* — Warning callout — */
+/* Informational note, deliberately not an alarm — these are things worth
+   knowing before you order or build, not hazards. */
+.warn{ font-family:var(--pi-sans); font-size:14px; line-height:1.6; color:var(--pi-text-secondary);
+  background:var(--pi-action-primary-tint); border-left:3px solid var(--pi-action-primary);
+  border-radius:var(--pi-radius-md); padding:14px 17px; margin:6px 0 14px; }
+.warn strong{ color:var(--pi-text-heading); }
+.warn--sm{ font-size:13px; padding:11px 14px; margin:0 0 10px; }
+
+/* — Build videos: click-to-load, nothing hits YouTube until you press play — */
+.vids{ max-width:840px; margin:0 auto; display:grid; gap:10px; }
+.vid{ border:1px solid var(--pi-hairline); border-radius:var(--pi-radius-md);
+  background:var(--pi-bg-surface); overflow:hidden; }
+.vid summary{ display:flex; align-items:center; gap:16px; padding:16px 20px; cursor:pointer;
+  list-style:none; transition:background .14s; }
+.vid summary::-webkit-details-marker{ display:none; }
+.vid summary:hover{ background:var(--pi-bg-muted); }
+.vid .vn{ font-family:var(--pi-serif); font-size:19px; color:var(--pi-indigo); line-height:1; flex:0 0 auto; }
+.vid .vt{ font-family:var(--pi-body); font-size:16px; color:var(--pi-text-heading); line-height:1.35; flex:1 1 auto; }
+.vid .vgo{ font-family:var(--pi-sans); font-size:12.5px; font-weight:600; letter-spacing:.04em;
+  color:var(--pi-accent-deep); flex:0 0 auto; display:inline-flex; align-items:center; gap:7px; }
+/* CSS-drawn play triangle — no emoji, no icon font */
+.vid .vgo::before{ content:""; width:0; height:0; border-style:solid;
+  border-width:5px 0 5px 8px; border-color:transparent transparent transparent var(--pi-accent-strong); }
+.vid[open] .vgo::before{ border-width:0 0 0 3px; height:10px;
+  border-color:var(--pi-accent-strong); box-shadow:5px 0 0 0 var(--pi-accent-strong); }
+.vid[open] summary{ background:var(--pi-bg-muted); border-bottom:1px solid var(--pi-hairline); }
+.vwrap{ position:relative; width:100%; aspect-ratio:16/9; background:#000; }
+.vwrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+.vfoot{ max-width:840px; margin:22px auto 0; font-family:var(--pi-sans); font-size:13px;
+  color:var(--pi-text-secondary); line-height:1.6; text-align:center; }
+
+/* — Numbered steps — */
+.steps{ counter-reset:step; display:grid; gap:0; max-width:820px; margin:0 auto; }
+.steps li{ counter-increment:step; list-style:none; position:relative; padding:18px 0 18px 62px;
+  border-top:1px solid var(--pi-hairline); }
+.steps li:first-child{ border-top:0; }
+.steps li::before{ content:counter(step); position:absolute; left:0; top:16px; width:34px; height:34px;
+  border-radius:var(--pi-radius-pill); background:var(--pi-accent-strong); color:#fff; font-family:var(--pi-sans);
+  font-size:15px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+.steps li h4{ font-size:18px; margin:0 0 .25em; }
+.steps li p{ font-size:15px; color:var(--pi-text-secondary); margin:0; line-height:1.55; }
+
+/* — Organizers — */
+.org{ display:flex; gap:20px; align-items:flex-start; }
+.org .avatar{ flex:0 0 56px; width:56px; height:56px; border-radius:var(--pi-radius-pill);
+  background:var(--pi-indigo-tint); color:var(--pi-indigo); font-family:var(--pi-serif);
+  font-size:24px; display:flex; align-items:center; justify-content:center; }
+.org .role{ font-family:var(--pi-sans); font-size:12.5px; font-weight:600; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--pi-indigo); margin:.15em 0 .5em; }
+.org p{ font-size:15px; color:var(--pi-text-secondary); margin:0; }
+
+/* — Foundations cards with imagery — */
+.fnd{ overflow:hidden; }
+.fnd .thumb{ width:calc(100% + 48px); max-width:none; height:128px; margin:-24px -24px 16px; object-fit:cover; display:block;
+  border-bottom:1px solid var(--pi-hairline); }
+.fnd h4{ font-size:17px; margin:0 0 .3em; }
+
+/* — Dark band / interest form — */
+.dark{ background:linear-gradient(180deg,var(--pi-surface-dark),var(--pi-surface-dark-2)); color:var(--pi-on-dark); }
+.dark .eyebrow{ color:var(--pi-on-dark-accent); }
+.dark h2, .dark h3, .dark h4{ color:var(--pi-on-dark); }
+.dark .lead{ color:var(--pi-on-dark-muted); }
+.dark p{ color:var(--pi-on-dark-muted); }
+.dark strong, .hero .lead strong{ color:var(--pi-on-dark); }
+.formcard{ background:var(--pi-bg-surface); color:var(--pi-text-body); border-radius:var(--pi-radius-lg);
+  padding:30px; border:1px solid var(--pi-hairline); }
+.formcard p{ color:var(--pi-text-secondary); }
+/* the card is a LIGHT island inside a .dark band: reset headings, or the
+   .dark h2/h3/h4 rule paints them white-on-white and they disappear. */
+.formcard h2, .formcard h3, .formcard h4{ color:var(--pi-text-heading); }
+.sym-note{ font-family:var(--pi-sans); font-size:14px; margin:22px 0 10px; }
+.sym-links{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.sym-links li{ font-family:var(--pi-sans); font-size:14.5px; color:rgba(255,255,255,.72); }
+.sym-links a{ color:var(--pi-on-dark-accent); font-weight:500; }
+.formcard--cta{ text-align:center; padding:34px 30px; }
+.formcard--cta h3{ font-size:23px; margin:0 0 .35em; }
+.formcard--cta p{ font-size:15px; line-height:1.6; margin:0 0 22px; }
+.formcard--cta .form-note{ margin-top:14px; }
+.form-note{ font-family:var(--pi-sans); font-size:12.5px; color:var(--pi-text-secondary); margin-top:12px; line-height:1.5; }
+
+/* — Footer — */
+footer{ background:var(--pi-bg-surface); padding:40px 0; border:0; }
+.foot-inner{ display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center; }
+.foot-inner .meta{ font-family:var(--pi-sans); font-size:13px; color:var(--pi-text-secondary); }
+.foot-links{ display:flex; gap:18px; flex-wrap:wrap; }
+.foot-links a{ font-family:var(--pi-sans); font-size:13px; color:var(--pi-text-secondary); }
+
+.kicker{ font-family:var(--pi-sans); font-size:12.5px; font-weight:600; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--pi-text-secondary); }
+.divider-note{ font-family:var(--pi-sans); font-size:13px; color:var(--pi-text-secondary);
+  background:var(--pi-action-primary-tint); border-radius:var(--pi-radius-md); padding:11px 15px; display:block; margin-top:18px; }
+
+@media(max-width:760px){
+  .hamburger{ display:inline-flex; }
+  .nav-cta{ display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a class="wordmark" href="https://protocol-institute.org/" aria-label="The Protocol Institute">
+      <img src="assets/pi-mark.svg" alt="">
+      <span class="wm">The Protocol Institute</span>
+    </a>
+    <div class="nav-right">
+      <a class="nav-cta" href="https://docs.google.com/forms/d/e/1FAIpQLScfT_Ia2h7-1Vs0fdPNtOMBv912DG3EGXhCUSgk2kspDLyuzw/viewform" target="_blank" rel="noopener">Register</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Sections">
+    <a href="#thesis">Overview</a>
+    <a href="#stack">What you'll learn</a>
+    <a href="#do">What you'll build</a>
+    <a href="#format">Schedule</a>
+    <a href="#robot">Equipment</a>
+    <a href="#videos">Build videos</a>
+    <a href="#who">Prerequisites</a>
+    <a href="#organizers">Instructors</a>
+    <a class="cta" href="https://docs.google.com/forms/d/e/1FAIpQLScfT_Ia2h7-1Vs0fdPNtOMBv912DG3EGXhCUSgk2kspDLyuzw/viewform" target="_blank" rel="noopener">Register</a>
+  </nav>
+</header>
+
+<!-- ===== LEFT-GUTTER SCROLL-SPY NAV ===== -->
+<nav class="gutter" id="gutter" aria-label="On this page">
+  <a href="#thesis">Overview</a>
+  <a href="#stack">What you'll learn</a>
+  <a href="#do">What you'll build</a>
+  <a href="#format">Schedule</a>
+  <a href="#robot">Equipment</a>
+  <a href="#videos">Build videos</a>
+  <a href="#who">Prerequisites</a>
+  <a href="#organizers">Instructors</a>
+  <a href="#interest">Register</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" style="padding:0;border-bottom:0;">
+  <div class="hero-bg" style="background-image:url('assets/hero-stack.jpg');"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">2026 Protocol Symposium · New Nature · Sep 21–25 · Online</span>
+    <h1>Robots as Protocol Citizens</h1>
+    <div class="tagline">A distributed robotics workshop.</div>
+    <p class="lead">Go from a box of parts to a working robot with its own <strong>on-chain identity</strong>, discoverable on a public marketplace, and drivable from anywhere over MCP — the same open rails an AI agent would use.</p>
+    <div class="hero-cta">
+      <a class="btn btn--cta" href="https://docs.google.com/forms/d/e/1FAIpQLScfT_Ia2h7-1Vs0fdPNtOMBv912DG3EGXhCUSgk2kspDLyuzw/viewform" target="_blank" rel="noopener">Register →</a>
+      <a class="btn btn--ghost" href="#robot">See the robot kit</a>
+    </div>
+    <div class="hero-meta">
+      <span class="chip"><b>Online</b> · two days</span>
+      <span class="chip"><b>4 sessions</b> + async Discord</span>
+      <span class="chip"><b>Your robot</b> · you build it and keep it</span>
+      <span class="chip">Programming background helps</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THESIS ===== -->
+<section id="thesis">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Overview</span>
+      <h2>Your robot runs on someone else's rails</h2>
+    </div>
+    <div class="split">
+      <div>
+        <p>Today, controlling a robot means the manufacturer's app, on the manufacturer's cloud, over a closed protocol. The machine you paid for answers to a company, not to you, and certainly not to any agent you might want to authorize.</p>
+        <p>The alternative is a robot that is a first-class citizen of an open stack. It carries its own identity on-chain. It is discoverable on a public marketplace. It is controllable by anyone, or any agent, that it authorizes, over rails nobody owns.</p>
+        <p>That frontier is young, under-tooled, and barely documented. Decentralized robot identity, on-chain robot marketplaces, and agent-addressable physical machines are all being invented right now. <strong>This workshop is the hands-on answer.</strong></p>
+      </div>
+      <div>
+        <img src="assets/art-cube.jpg" alt="Abstract line-art rendering of three planes forming an open isometric cube">
+        <p class="figure-cap">Four layers, touched by hand: identity, discovery, payment, control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== THE STACK ===== -->
+<section id="stack">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What you'll learn</span>
+      <h2>Connect your robot to the open web</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card">
+        <div class="num">01</div>
+        <h4>On-chain identity</h4>
+        <p>Your robot gets an address and a registered identity, so it can be named, authorized, and held accountable without a manufacturer vouching for it.</p>
+        <span class="spec">ERC-8004</span>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h4>Marketplace discovery</h4>
+        <p>Publish the robot to a public marketplace, then find it again from the outside. This is the step that turns a private device into a discoverable service.</p>
+        <span class="spec">YakRover marketplace</span>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h4>Payments</h4>
+        <p>Machine-payable access, so that use of a physical robot can be metered and settled over the same rails as anything else on the open web.</p>
+        <span class="spec">x402</span>
+      </div>
+      <div class="card">
+        <div class="num">04</div>
+        <h4>Agent control</h4>
+        <p>Drive the robot remotely through MCP, commanding a physical machine over exactly the interface an AI agent would reach for.</p>
+        <span class="spec">Model Context Protocol</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHAT YOU'LL DO ===== -->
+<section id="do" class="sec-surface">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What you'll build</span>
+      <h2>Assemble, register, publish, drive</h2>
+    </div>
+    <ul class="ticks ticks-2">
+      <li>Set up a dev environment and <b>walk the stack in code</b> against a reference robot.</li>
+      <li><b>Assemble the robot</b> from parts and bring it online.</li>
+      <li>Register its <b>on-chain identity</b> so it can be addressed and authorized.</li>
+      <li><b>Publish it to the marketplace</b>, then find it again from the outside.</li>
+      <li><b>Drive it remotely via MCP</b>, end to end, over open rails.</li>
+      <li>Debug, compare builds, and share progress <b>async on Discord</b>.</li>
+    </ul>
+    <div style="max-width:880px;margin:34px auto 0;">
+      <p class="divider-note">By the end you have a working robot you assembled, registered on-chain, listed on the marketplace, and remotely controlled, plus a working understanding of each layer solid enough to extend it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FORMAT / SESSIONS ===== -->
+<section id="format">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Schedule</span>
+      <h2 class="oneline">Four sessions across two days</h2>
+      <p class="lead">Two sessions each day. Day one is the protocol; day two is your robot going into it. Async co-working runs on Discord throughout: assembly help, debugging, and sharing progress.</p>
+    </div>
+    <div style="max-width:840px;margin:0 auto;">
+
+      <span class="daylabel">Day 1 <span class="sub">— the protocol</span></span>
+      <div class="session">
+        <div class="when">Session 1<span class="sub">Intro</span></div>
+        <div>
+          <h4>Intro and stack overview</h4>
+          <p>What YakRover is and why decentralized robotics, then a tour of the four layers: on-chain identity, marketplace discovery, payments, and MCP control.</p>
+        </div>
+      </div>
+      <div class="session">
+        <div class="when">Session 2<span class="sub">Set-up</span></div>
+        <div>
+          <h4>Robot initial code set-up</h4>
+          <p>Stand up the dev environment and get the control code running, so the stack is familiar and your machine is talking before day two.</p>
+        </div>
+      </div>
+
+      <span class="daylabel">Day 2 <span class="sub">— your robot in it</span></span>
+      <div class="session">
+        <div class="when">Session 3<span class="sub">Hardware</span></div>
+        <div>
+          <h4>Refine the robot build and fix what broke</h4>
+          <p>A working session on the physical build: finish assembly, chase down the wiring and power problems that always surface, and get every robot in the room driving reliably.</p>
+        </div>
+      </div>
+      <div class="session">
+        <div class="when">Session 4<span class="sub">End to end</span></div>
+        <div>
+          <h4>Register its identity and drive it via MCP</h4>
+          <p>Give the robot an on-chain identity and publish it, then find it on the marketplace and teleoperate it over MCP. Closes with a short clinic and the open problems in the stack.</p>
+        </div>
+      </div>
+
+      <p style="margin-top:30px;"><span class="kicker">Throughout</span> &nbsp;An async channel on Discord runs alongside the sessions for assembly help, debugging, and comparing builds. Most hardware problems get solved there rather than in the live sessions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE ROBOT / BOM ===== -->
+<section id="robot" class="sec-surface">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Equipment</span>
+      <h2>You buy the kit, and you keep the robot</h2>
+      <p class="lead">This is a build workshop, so the hardware is yours. Order the parts once interest is confirmed, assemble ahead of the sessions, and arrive with a robot that already drives.</p>
+    </div>
+
+    <figure class="shots">
+      <div class="shot"><img src="assets/robot-3q.jpg" alt="The assembled Freenove 4WD smart car: black chassis, four yellow-rimmed wheels, a Raspberry Pi board on top and an ultrasonic sensor module at the front." loading="lazy" width="720" height="605"></div>
+      <div class="shot shot--dark"><img src="assets/robot-top.jpg" alt="Top-down view of the same robot, showing the Raspberry Pi, the servo, the wiring loom and the four motors." loading="lazy" width="599" height="760"></div>
+      <figcaption>What you are building: the 4WD Smart Car with a Raspberry&nbsp;Pi mounted on the control board. Images by <a href="https://github.com/Freenove/Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi" target="_blank" rel="noopener">Freenove</a>, used under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" rel="noopener">CC&nbsp;BY-NC-SA&nbsp;3.0</a>.</figcaption>
+    </figure>
+
+    <div class="bom">
+      <div class="bom-row">
+        <div class="n">1</div>
+        <div>
+          <h4>Freenove car kit for Raspberry Pi</h4>
+          <p>Either the <strong>4WD Smart Car Kit</strong> or the <strong>Mecanum Wheel Car Kit</strong>; both work. Includes chassis, motors, servo, and camera. The Raspberry Pi is <em>not</em> included.</p>
+          <div class="links">
+            <a href="https://www.amazon.com/dp/B07YD2LT9D" target="_blank" rel="noopener">4WD kit on Amazon →</a>
+            <a href="https://www.freenove.com" target="_blank" rel="noopener">freenove.com →</a>
+          </div>
+        </div>
+        <div class="price">$70–100<span class="u">approx.</span></div>
+      </div>
+
+      <div class="bom-row">
+        <div class="n">2</div>
+        <div>
+          <h4>Raspberry Pi</h4>
+          <p>A Pi 4B with 2&nbsp;GB is the comfortable target; 1&nbsp;GB works if budget is tight. Buying a starter bundle is the simpler route: it includes the power supply and an SD card already imaged.</p>
+          <div class="links">
+            <a href="https://www.amazon.com/CanaKit-Raspberry-Pi-Extreme-Kit/dp/B08B6F8QRV/" target="_blank" rel="noopener">CanaKit bundle →</a>
+          </div>
+        </div>
+        <div class="price">$45–110<span class="u">bare board or bundle</span></div>
+      </div>
+
+      <div class="bom-row">
+        <div class="n">3</div>
+        <div>
+          <h4>microSD card</h4>
+          <p>Only needed if you buy the Pi on its own rather than as a bundle. Flash Raspberry&nbsp;Pi OS before assembly; you can do it headless, with no separate screen.</p>
+          <div class="links">
+            <a href="https://www.amazon.com/dp/B08L5HMJVW" target="_blank" rel="noopener">SD card →</a>
+            <a href="https://www.youtube.com/watch?v=7vA5utwzY0E&amp;list=PLOkhax8xuWu3mZHYE502-aws1rnxhhdvO" target="_blank" rel="noopener">Headless setup video →</a>
+          </div>
+        </div>
+        <div class="price">$10–15<span class="u">if bought separately</span></div>
+      </div>
+
+      <div class="bom-row">
+        <div class="n">4</div>
+        <div>
+          <h4>18650 batteries <em style="font-style:normal;font-size:13px;color:var(--pi-accent-deep);">+ a charger</em></h4>
+          <p>The part most people get wrong. You need <strong>button-top, unprotected</strong> cells rated <strong>10A or more</strong> discharge. Protected cells are physically longer and will not seat; low-current cells will not drive the motors.</p>
+          <p><strong>A charger is required.</strong> The car's board does not charge the cells over USB, so they come out of the robot to charge. Freenove: <em>"almost any charger suitable for 18650 batteries can be used."</em></p>
+          <p class="warn warn--sm"><strong>Judge the cell, not the shop.</strong> Genuine 18650s top out around <strong>3600&nbsp;mAh</strong>, so a listing advertising far more is not a real cell. A named manufacturer — Samsung, Panasonic, LG, Sony — is the easiest way to be sure.</p>
+          <div class="links">
+            <a href="https://github.com/Freenove/Freenove_Battery_List/blob/main/18650_Button-Top_Unprotected.md" target="_blank" rel="noopener">Freenove's vetted list, by region →</a>
+            <a href="https://imrbatteries.com/products/samsung-30q-18650-3000mah-15a-battery-button-top" target="_blank" rel="noopener">US: Samsung 30Q, 15A →</a>
+            <a href="https://www.amazon.de/-/en/dp/B0DLGL1ZBG" target="_blank" rel="noopener">EU: cells + charger →</a>
+          </div>
+        </div>
+        <div class="price">$20–35<span class="u">cells + charger</span></div>
+      </div>
+
+      <div class="bom-total">
+        <span class="l">Approximate total</span>
+        <span class="v">$150–250</span>
+      </div>
+      <p class="warn"><strong>Charge the batteries before you start assembling.</strong> Freenove note that assembling with the wrong or uncharged cells can cause installation errors and damage the servos, so it is worth doing in that order.</p>
+      <p class="figure-cap" style="margin-top:0;">Prices are indicative and move around; check current listings before ordering. Exact part numbers are confirmed by email before anyone is asked to buy anything.</p>
+    </div>
+
+    <div style="max-width:820px;margin:56px auto 0;">
+      <div class="section-head" style="margin-bottom:24px;">
+        <span class="eyebrow">Before the workshop</span>
+        <h2 style="font-size:clamp(26px,3vw,34px);">Five steps, at your own pace</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <h4>Register and commit to a kit</h4>
+          <p>Tell us you're in and that you're ready to buy the hardware. We confirm the exact part list and the schedule by email.</p>
+        </li>
+        <li>
+          <h4>Order the parts</h4>
+          <p>Shipping is the long pole, so order as early as you can. Batteries in particular are often a separate delivery.</p>
+        </li>
+        <li>
+          <h4>Build the robot</h4>
+          <p>Follow Freenove's step-by-step assembly guide. Budget an unhurried afternoon; the Discord channel is open the whole time.</p>
+          <div class="links" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
+            <a href="https://docs.freenove.com/projects/fnk0043/en/latest/index.html" target="_blank" rel="noopener" style="font-family:var(--pi-sans);font-size:13px;font-weight:500;">Read online →</a>
+            <a href="https://github.com/Freenove/Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi/raw/master/Tutorial%28ordinary_wheels%29.pdf" style="font-family:var(--pi-sans);font-size:13px;font-weight:500;">Download PDF — ordinary wheels (9&nbsp;MB) ↓</a>
+            <a href="https://github.com/Freenove/Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi/raw/master/Tutorial%28mecanum_wheels%29.pdf" style="font-family:var(--pi-sans);font-size:13px;font-weight:500;">Download PDF — mecanum wheels (9&nbsp;MB) ↓</a>
+          </div>
+        </li>
+        <li>
+          <h4>Test it with Freenove's own software</h4>
+          <p>Confirm the robot drives, steers, and streams video on the stock stack. This proves the hardware before any protocol work touches it.</p>
+        </li>
+        <li>
+          <h4>Clone the repo and point your coding agent at it</h4>
+          <p>Pull the control repo, connect the robot to your computer, and let Claude Code (or your agent of choice) bring it up to date. You arrive at session one with a machine that already answers.</p>
+          <div class="links" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
+            <a href="https://github.com/pi-drg/picar_freenove_fastapi" target="_blank" rel="noopener" style="font-family:var(--pi-sans);font-size:13px;font-weight:500;">picar_freenove_fastapi →</a>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUILD VIDEOS ===== -->
+<section id="videos">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Build videos</span>
+      <h2>Watch the build before you start</h2>
+      <p class="lead">Freenove's own seven-part walkthrough, in build order. Expand any one to play it here.</p>
+    </div>
+
+    <div class="vids" id="vids">
+      <details class="vid"><summary><span class="vn">01</span><span class="vt">Headless Raspberry&nbsp;Pi OS install — Mac</span><span class="vgo">Play</span></summary><div class="vwrap" data-yt="I1zRHp3Deeg"></div></details>
+      <details class="vid"><summary><span class="vn">02</span><span class="vt">Headless Raspberry&nbsp;Pi OS install — Windows</span><span class="vgo">Play</span></summary><div class="vwrap" data-yt="XpiT_ezb_7c"></div></details>
+      <details class="vid"><summary><span class="vn">03</span><span class="vt">Use the Pi without a screen: Wi-Fi and remote login</span><span class="vgo">Play</span></summary><div class="vwrap" data-yt="7vA5utwzY0E"></div></details>
+      <details class="vid"><summary><span class="vn">04</span><span class="vt">Chapter 1 — library installation</span><span class="vgo">Play</span></summary><div class="vwrap" data-yt="3VexTFHZUSY"></div></details>
+      <details class="vid"><summary><span class="vn">05</span><span class="vt">Chapters 2–3 — assembly and first test</span><span class="vgo">Play</span></summary><div class="vwrap" data-yt="G3Q8xNatXgM"></div></details>
+      <details class="vid"><summary><span class="vn">06</span><span class="vt">Chapters 4–6 — light tracing, ultrasonic avoidance, line tracking</span><span class="vgo">Play</span></summary><div class="vwrap" data-yt="kMzOUqFoK0E"></div></details>
+      <details class="vid"><summary><span class="vn">07</span><span class="vt">Chapter 7 — drive the car from a client or app</span><span class="vgo">Play</span></summary><div class="vwrap" data-yt="3WH4QYPWN-I"></div></details>
+    </div>
+
+    <p class="vfoot">Videos by <a href="https://www.youtube.com/@Freenove" target="_blank" rel="noopener">Freenove</a> · <a href="https://www.youtube.com/playlist?list=PLOkhax8xuWu3mZHYE502-aws1rnxhhdvO" target="_blank" rel="noopener">open the full playlist on YouTube →</a><br>Nothing loads from YouTube until you press play.</p>
+  </div>
+</section>
+
+<!-- ===== WHO IT'S FOR ===== -->
+<section id="who" class="sec-surface">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Prerequisites</span>
+      <h2 class="oneline">Engineers and protocol researchers</h2>
+    </div>
+    <div class="split">
+      <div>
+        <p>Deliberately interdisciplinary: protocol and crypto people who have never driven a robot, and roboticists who have never touched on-chain identity. The cross-pollination is the point: neither group has the whole stack, and the gap between them is where the interesting problems are.</p>
+        <p>A programming background will help. You do not need prior robotics or blockchain experience, but you should be comfortable working in a terminal and reading unfamiliar code.</p>
+        <div class="divider-note">The skill on offer is full-stack literacy in turning a piece of hardware into a protocol-native participant.</div>
+      </div>
+      <div>
+        <h4 style="font-family:var(--pi-sans);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--pi-action-primary);">Before you arrive</h4>
+        <ul class="ticks">
+          <li>Bought and assembled the <b>robot kit</b> (see above).</li>
+          <li>Tested it on <b>Freenove's stock software</b>.</li>
+          <li>Have a <b>coding agent</b> installed (Claude Code or equivalent).</li>
+          <li>Have a <b>GitHub account</b> and a working terminal.</li>
+          <li>Have a <b>wallet</b> you're willing to use on a testnet.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ORGANIZERS ===== -->
+<section id="organizers" class="sec-surface">
+  <div class="wrap">
+    <div class="section-head section-head--wide">
+      <span class="eyebrow">Instructors</span>
+      <h2 class="oneline">Run by the Distributed Robotics Research Group</h2>
+      <p class="lead">A new special interest group working at the intersection of AI agents, blockchains, and robotics. Protocols are engineered arguments: the group argues about robot coordination protocols, then engineers to test them on real hardware. <a href="https://protocol-institute.org/sigs/drg/about/" target="_blank" rel="noopener">About the group →</a></p>
+    </div>
+    <div class="grid g2">
+      <div class="card org">
+        <div class="avatar">AR</div>
+        <div>
+          <h3 style="font-size:21px;margin-bottom:.1em;">Anuraj R</h3>
+          <div class="role">Co-lead, Distributed Robotics Research Group</div>
+          <p>Anuraj has built hardware and software professionally for around fifteen years, and has been exploring blockchain for robotics since 2021. In 2024 he built the first crypto robot operated over a decentralized social network, with crypto payment gates. He designed several of the core layers of the YakRover protocol stack.</p>
+        </div>
+      </div>
+      <div class="card org">
+        <div class="avatar">RF</div>
+        <div>
+          <h3 style="font-size:21px;margin-bottom:.1em;">Rafael Fernández</h3>
+          <div class="role">Co-lead, Distributed Robotics Research Group</div>
+          <p>Rafa is Director of the ZKsync Association, where he architected and deployed ZKsync's governance smart-contract system, live since 2024. He was a core researcher in the Summer of Protocols, and architected the marketplace protocol in the YakRover stack.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FOUNDATIONS ===== -->
+<section class="sec-surface tight">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:28px;">
+      <span class="eyebrow">Foundations</span>
+      <h2 style="font-size:clamp(26px,3vw,34px);">What this workshop builds on</h2>
+    </div>
+    <div class="grid g4">
+      <a class="card fnd" href="https://github.com/YakRoboticsGarage" target="_blank" rel="noopener" style="color:inherit;">
+        <img class="thumb" src="assets/fnd-yak.jpg" alt="">
+        <h4>Yak Robotics Garage</h4>
+        <p>The yakrover protocol work, in the open. GitHub →</p>
+      </a>
+      <a class="card fnd" href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener" style="color:inherit;">
+        <img class="thumb" src="assets/fnd-erc.jpg" alt="">
+        <h4>ERC-8004</h4>
+        <p>The identity layer the robot registers into. Read the spec →</p>
+      </a>
+      <a class="card fnd" href="https://docs.freenove.com/projects/fnk0043/en/latest/index.html" target="_blank" rel="noopener" style="color:inherit;">
+        <img class="thumb" src="assets/fnd-freenove.jpg" alt="">
+        <h4>Freenove build guide</h4>
+        <p>Step-by-step assembly for the car kit. Docs →</p>
+      </a>
+      <a class="card fnd" href="https://protocol-institute.org/events/protocol-symposium-2026/" target="_blank" rel="noopener" style="color:inherit;">
+        <img class="thumb" src="assets/fnd-symposium.jpg" alt="">
+        <h4>2026 Protocol Symposium</h4>
+        <p>New Nature · Sep 21–25 · online. Details →</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXPRESS INTEREST ===== -->
+<section id="interest" class="dark">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <span class="eyebrow">Registration</span>
+        <h2>Register for the workshop</h2>
+        <p class="lead">This registers you for the workshop and gets the hardware list to you early enough to order and build your kit in time.</p>
+        <p class="sym-note">The Symposium itself has its own registration, separate from this form:</p>
+        <ul class="sym-links">
+          <li><a href="https://luma.com/96c7epvr" target="_blank" rel="noopener">Register for the Symposium</a> — Luma</li>
+          <li><a href="https://protocol-institute.org/events/protocol-symposium-2026/" target="_blank" rel="noopener">Full programme and schedule</a> — Protocol Institute</li>
+          <li><a href="https://protocolized.summerofprotocols.com/p/protocol-symposium-2026-registration" target="_blank" rel="noopener">Read the announcement</a> — Protocolized</li>
+        </ul>
+      </div>
+      <div>
+        <div class="formcard formcard--cta">
+          <a class="btn btn--cta" href="https://docs.google.com/forms/d/e/1FAIpQLScfT_Ia2h7-1Vs0fdPNtOMBv912DG3EGXhCUSgk2kspDLyuzw/viewform" target="_blank" rel="noopener" style="width:100%;justify-content:center;">Open the registration form →</a>
+          <p class="form-note">Opens in a new tab. Prefer email? Write to <a href="mailto:team@protocol-institute.org">team@protocol-institute.org</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap foot-inner">
+    <div class="meta">
+      <strong style="font-family:var(--pi-serif);font-weight:400;font-size:17px;">The Protocol Institute</strong><br>
+      Distributed Robotics Research Group · 2026 Protocol Symposium, New Nature
+    </div>
+    <div class="foot-links">
+      <a href="https://protocol-institute.org/sigs/drg/about/">Distributed Robotics SIG</a>
+      <a href="https://github.com/YakRoboticsGarage">Yak Robotics Garage</a>
+      <a href="https://protocol-institute.org/events/protocol-symposium-2026/">Symposium</a>
+      <a href="https://protocol-institute.org/">Protocol Institute</a>
+      <a href="mailto:team@protocol-institute.org">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---- mobile menu ---- */
+(function(){
+  var burger = document.getElementById('hamburger');
+  var menu = document.getElementById('mobile-menu');
+  if(burger && menu){
+    burger.addEventListener('click', function(){
+      var open = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    menu.addEventListener('click', function(e){
+      if(e.target.tagName === 'A'){ menu.classList.remove('open'); burger.setAttribute('aria-expanded','false'); }
+    });
+  }
+})();
+
+/* ---- left-gutter scroll-spy ---- */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.gutter a'));
+  if(!links.length || !('IntersectionObserver' in window)) return;
+  var map = {};
+  links.forEach(function(a){ var id = a.getAttribute('href').slice(1); var s = document.getElementById(id); if(s) map[id] = a; });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        links.forEach(function(a){ a.classList.remove('active'); });
+        if(map[en.target.id]) map[en.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
+  Object.keys(map).forEach(function(id){ obs.observe(document.getElementById(id)); });
+
+  /* Flip gutter text to light while it overlaps a dark band, so it keeps AA
+     contrast over the hero, the SIG section, and the interest form. */
+  var gutter = document.getElementById('gutter');
+  var darkSecs = Array.prototype.slice.call(document.querySelectorAll('.hero, .dark'));
+  function syncDark(){
+    if(!gutter) return;
+    var gr = gutter.getBoundingClientRect();
+    var cy = (gr.top + gr.bottom) / 2;
+    var overDark = darkSecs.some(function(s){ var r = s.getBoundingClientRect(); return r.top <= cy && r.bottom >= cy; });
+    gutter.classList.toggle('on-dark', overDark);
+  }
+  window.addEventListener('scroll', syncDark, { passive:true });
+  window.addEventListener('resize', syncDark);
+  syncDark();
+})();
+
+/* ---- build videos ----
+   The iframe is created on first open, so the page makes ZERO requests to
+   YouTube until the visitor actually presses play. youtube-nocookie keeps the
+   privacy-preserving host. Closing tears the iframe back down — a hidden
+   <details> would otherwise keep playing audio. */
+(function(){
+  var vids = document.querySelectorAll('#vids .vid');
+  function close(d){
+    var w = d.querySelector('.vwrap');
+    if(w) w.innerHTML = '';
+    var g = d.querySelector('.vgo');
+    if(g) g.textContent = 'Play';
+    d.open = false;
+  }
+  Array.prototype.forEach.call(vids, function(d){
+    d.addEventListener('toggle', function(){
+      var wrap = d.querySelector('.vwrap');
+      var go = d.querySelector('.vgo');
+      if(!d.open){ if(wrap) wrap.innerHTML=''; if(go) go.textContent='Play'; return; }
+      /* one at a time */
+      Array.prototype.forEach.call(vids, function(o){ if(o !== d && o.open) close(o); });
+      if(go) go.textContent = 'Close';
+      if(!wrap || wrap.firstChild) return;
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + wrap.getAttribute('data-yt') + '?autoplay=1&rel=0';
+      f.title = d.querySelector('.vt').textContent;
+      f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.setAttribute('allowfullscreen','');
+      wrap.appendChild(f);
+    });
+  });
+})();
+
+</script>
+</body>
+</html>
