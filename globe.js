@@ -15,10 +15,13 @@
 
   var cities = [
     { name: "Oulu", lat: 65.01, lon: 25.47 },
-    { name: "Seattle", lat: 47.61, lon: -122.33 },
+    { name: "Seattle ×2", lat: 47.61, lon: -122.33 },
     { name: "Berlin", lat: 52.52, lon: 13.4 },
     { name: "Tel Aviv", lat: 32.07, lon: 34.78 },
     { name: "Tokyo", lat: 35.68, lon: 139.69 },
+    { name: "Rome", lat: 41.9, lon: 12.5 },
+    { name: "New England", lat: 42.36, lon: -71.06, dy: 5 },
+    { name: "Ottawa", lat: 45.42, lon: -75.7, dy: -3 },
   ];
   var links = [
     [0, 2],
@@ -29,6 +32,12 @@
     [3, 4],
     [0, 1],
     [0, 3],
+    [5, 2],
+    [5, 3],
+    [6, 5],
+    [6, 7],
+    [7, 1],
+    [6, 2],
   ];
 
   var projection = d3.geoOrthographic().scale(RG).translate([CX, CY]).clipAngle(90).rotate([-10, -28]);
@@ -192,7 +201,7 @@
           citiesGroup
             .append("text")
             .attr("x", p[0] + 9)
-            .attr("y", p[1] + 3)
+            .attr("y", p[1] + 3 + (c.dy || 0))
             .attr("font-family", "'JetBrains Mono', monospace")
             .attr("font-size", "9px")
             .attr("font-weight", "600")

@@ -6,7 +6,7 @@
     <title>YakRobot Protocols — Distributed Robotics Group · Protocol Institute</title>
     <meta
       name="description"
-      content="Open-source protocols for onchain robotics. Identity, command, marketplace, attestation and cryptographic security for autonomous robots — built and tested on real robots by the Distributed Robotics Group at the Protocol Institute."
+      content="Open-source protocols for onchain robotics. Identity, discovery, payment, control and marketplace for autonomous robots — built and tested on real robots by the Distributed Robotics Group at the Protocol Institute."
     />
 
     <meta property="og:type" content="website" />
@@ -537,6 +537,16 @@
       .pcard .repo:hover {
         color: var(--primary-pressed);
       }
+      .pcard .repos {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .pcard .repos .repo {
+        margin-top: 0;
+        word-break: break-word;
+      }
       .pcard .repo.soon {
         color: var(--ink-secondary);
       }
@@ -601,6 +611,13 @@
         font-family: var(--font-sans);
         font-size: 13px;
         color: var(--ink-secondary);
+      }
+      .svc-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        max-width: 900px;
+        margin: 40px auto 0;
       }
 
       /* ============ discovery / network ============ */
@@ -934,7 +951,8 @@
         .stack-grid {
           grid-template-columns: repeat(2, 1fr);
         }
-        .video-grid {
+        .video-grid,
+        .svc-grid {
           grid-template-columns: 1fr;
           max-width: 560px;
         }
@@ -1006,7 +1024,7 @@
         <nav class="navlinks" aria-label="Primary">
           <a href="#stack">Protocol Stack</a>
           <a href="#platform">Platform</a>
-          <a href="#discovery">Discovery</a>
+          <a href="#discovery">YakRobot Network</a>
           <a href="#drg">The Group</a>
           <a class="nav-cta sans" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Join DRG</a>
         </nav>
@@ -1036,7 +1054,7 @@
               <p class="tagline">Coordinating robots.</p>
             </div>
           </div>
-          <p class="hero-lead">An open-source protocol stack for decentralized, distributed robotics — identity, command, marketplace, attestation and fleet security. Engineered as arguments, then tested on real robots, wherever they run.</p>
+          <p class="hero-lead">An open-source protocol stack for decentralized, distributed robotics: identity, discovery, payment, control and marketplace. Engineered as arguments, then tested on real robots, wherever they run.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#stack">Explore the stack</a>
             <a class="btn btn-secondary" href="https://protocol-institute.org/" target="_blank" rel="noopener">Join the community</a>
@@ -1044,11 +1062,11 @@
           <div class="hero-meta">
             <span>
               <i class="dot blue"></i>
-              6 composable protocols
+              5 open protocol layers
             </span>
             <span>
               <i class="dot rust"></i>
-              Code coming soon
+              9 robots on the network
             </span>
             <span>
               <i class="dot"></i>
@@ -1102,31 +1120,70 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
         <div class="sec-head">
           <p class="eyebrow">What we're building</p>
           <h2>The protocol stack</h2>
-          <p>Full-stack open-source infrastructure for autonomous decentralized, distributed robots — from on-chip cryptography to on-chain identity. Each layer is a separate, composable protocol.</p>
+          <p>Five questions come up whenever two machines with different owners work together: who are you, how do I find you, how do I pay you, how do I tell you what to do, and what’s a fair price? Each answer is a separate, composable protocol with its own open repository.</p>
         </div>
 
         <div class="stack-grid">
           <article class="pcard">
-            <div class="top"><span class="layer">Identity</span></div>
-            <h3>ERC-8004 Robot Identity</h3>
-            <p>On-chain discovery and identity for robots. Each robot gets a verifiable, decentralized identity anchored to hardware via ATECC608B secure elements.</p>
-            <span class="repo soon">Coming soon</span>
+            <div class="top"><span class="layer">Layer 1 · Identity</span></div>
+            <h3>ERC-8004 Robot Passport</h3>
+            <p>Each robot is registered on ERC-8004. Its passport is owned by the operator’s wallet, with an agent card on IPFS and a fleet vouch as an EAS attestation.</p>
+            <div class="repos">
+              <a class="repo" href="https://register.yakrobot.com" target="_blank" rel="noopener">register.yakrobot.com ↗</a>
+              <a class="repo" href="https://github.com/pi-drg/yakrobot-descriptor" target="_blank" rel="noopener">pi-drg/yakrobot-descriptor ↗</a>
+            </div>
           </article>
-
           <article class="pcard">
-            <div class="top"><span class="layer">Gateway</span></div>
+            <div class="top"><span class="layer">Layer 2 · Discovery</span></div>
+            <h3>Registry-Based Discovery</h3>
+            <p>No directory and no matchmaker. Agents read the public registry, keep only robots vouched for by trusted fleets, and get an MCP config wired to every one.</p>
+            <div class="repos">
+              <a class="repo" href="https://github.com/pi-drg/yakrobot-identity" target="_blank" rel="noopener">pi-drg/yakrobot-identity ↗</a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="top"><span class="layer">Layer 3 · Payment</span></div>
+            <h3>x402 Robot Leases</h3>
+            <p>Pay per use with x402 and USDC on Base, or by card through Stripe. Money goes straight from payer to robot owner, and the payer gets back a signed driving ticket.</p>
+            <div class="repos">
+              <a class="repo" href="https://pay.yakrobot.com" target="_blank" rel="noopener">pay.yakrobot.com ↗</a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="top"><span class="layer">Layer 4 · Control</span></div>
             <h3>MCP Command Gateway</h3>
-            <p>A FastAPI + Model Context Protocol gateway. LLMs discover, command and query robots in natural language, through per-robot isolated instances.</p>
+            <p>A FastAPI + Model Context Protocol gateway with one isolated MCP server per robot, a browser driving console, and one driver at a time. Adding a robot means adding a plugin.</p>
+            <div class="repos">
+              <a class="repo" href="https://github.com/pi-drg/yakrobot-gateway" target="_blank" rel="noopener">pi-drg/yakrobot-gateway ↗</a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="top"><span class="layer">Layer 5 · Marketplace</span></div>
+            <h3>Robot Task Auctions</h3>
+            <p>An open Robot Task Auction Protocol: agents post structured tasks, qualified robots bid, the result is checked against the spec, and payment settles on success.</p>
+            <div class="repos">
+              <a class="repo" href="https://yakrobot.bid/demo" target="_blank" rel="noopener">Live demo ↗</a>
+              <a class="repo" href="https://github.com/YakRoboticsGarage/yakrover-marketplace" target="_blank" rel="noopener">yakrover-marketplace ↗</a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="top"><span class="layer">Physical</span></div>
+            <h3>Open Reference Robots</h3>
+            <p>Cheap on purpose, so anyone can join: the Freenove PiCar with our own control server on the Pi, and the ESP32-S3 Tumbller. Any board that can run a small web server can join.</p>
+            <div class="repos">
+              <a class="repo" href="https://github.com/pi-drg/picar_freenove_fastapi" target="_blank" rel="noopener">pi-drg/picar_freenove_fastapi ↗</a>
+              <a class="repo" href="https://github.com/YakRoboticsGarage/tumbller-esp32s3" target="_blank" rel="noopener">tumbller-esp32s3 ↗</a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="top">
+              <span class="layer">Hardware Identity</span>
+              <span class="badge design">In design</span>
+            </div>
+            <h3>Hardware Root of Trust</h3>
+            <p>An ATECC608B secure chip holds a key that can’t be copied out and signs every request, binding the passport to the physical machine.</p>
             <span class="repo soon">Coming soon</span>
           </article>
-
-          <article class="pcard">
-            <div class="top"><span class="layer">Marketplace</span></div>
-            <h3>Robot Task Marketplace</h3>
-            <p>A decentralized marketplace for robot work. Post a job, robots bid, results are verified on-chain with zero-knowledge proofs of sensor-data integrity.</p>
-            <a class="repo" href="https://yakrobot.bid/demo" target="_blank" rel="noopener">Live demo ↗</a>
-          </article>
-
           <article class="pcard">
             <div class="top">
               <span class="layer">Cryptography</span>
@@ -1136,27 +1193,19 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
             <p>KZG polynomial commitments for batch sensor attestation. Provably honest robots, without revealing raw telemetry.</p>
             <span class="repo soon">Coming soon</span>
           </article>
-
           <article class="pcard">
             <div class="top">
               <span class="layer">Fleet Security</span>
               <span class="badge design">In design</span>
             </div>
-            <h3>2-of-3 Fleet Protocol</h3>
-            <p>Multi-sig fleet management on Safe&#123;Wallet&#125; — operator, hardware and recovery keys. No single point of failure across the swarm.</p>
-            <span class="repo soon">Coming soon</span>
-          </article>
-
-          <article class="pcard">
-            <div class="top"><span class="layer">Hardware</span></div>
-            <h3>ESP32-S3 Tumbller Reference Platform</h3>
-            <p>Our first reference platform: a self-balancing differential-drive robot with SimpleFOC motor control. More platforms are on the way to be integrated.</p>
+            <h3>2-of-3 Fleet Custody</h3>
+            <p>Multi-sig fleet management on Safe&#123;Wallet&#125;: operator, hardware and recovery keys. A lost laptop or stolen robot never compromises the fleet.</p>
             <span class="repo soon">Coming soon</span>
           </article>
         </div>
 
         <div class="stack-foot">
-          <span class="btn btn-ghost sans is-soon">⚙ Full protocol spec · coming soon</span>
+          <a class="btn btn-ghost sans" href="https://github.com/pi-drg" target="_blank" rel="noopener">All the code on GitHub ↗</a>
         </div>
       </div>
     </section>
@@ -1184,6 +1233,26 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
           <p class="cap">Robots bidding on posted jobs in the task marketplace. <a class="ext" href="https://yakrobot.bid/demo" target="_blank" rel="noopener">Try the live demo</a></p>
         </div>
       </div>
+      <div class="svc-grid">
+        <article class="pcard">
+          <div class="top">
+            <span class="layer">Identity · Live service</span>
+            <span class="badge shipped">Live</span>
+          </div>
+          <h3>Register a robot</h3>
+          <p>Get your robot an ERC-8004 passport. The registrar checks its description and pins the agent card to IPFS, and your own wallet signs the registration. Open to allowlisted operators.</p>
+          <a class="repo" href="https://register.yakrobot.com" target="_blank" rel="noopener">register.yakrobot.com ↗</a>
+        </article>
+        <article class="pcard">
+          <div class="top">
+            <span class="layer">Payment · Live service</span>
+            <span class="badge shipped">Live</span>
+          </div>
+          <h3>Lease a robot</h3>
+          <p>Buy a time-boxed lease over x402 in USDC, or by card, and take the wheel from your browser. Payment goes straight to the robot’s owner.</p>
+          <a class="repo" href="https://pay.yakrobot.com" target="_blank" rel="noopener">pay.yakrobot.com ↗</a>
+        </article>
+      </div>
     </section>
 
     <!-- ============ DISCOVERY ============ -->
@@ -1197,15 +1266,19 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
               Every robot registers a verifiable identity on-chain, then discovers its peers through the same registry. Machines find each other, agree on work, and prove what they did —
               no central operator, no single point of failure.
             </p>
-            <p>One registry. Many sites. Decentralized robots on locations that already span continents, speaking the same protocol wherever it runs.</p>
+            <p>One registry. Nine robots in Oulu, Berlin, Rome, Tel Aviv, Tokyo, Seattle, Ottawa and New England, run by different people on three continents and speaking the same protocol wherever they run.</p>
             <div class="disc-stats">
               <div class="stat">
-                <div class="n">5</div>
-                <div class="l">Robot sites online</div>
+                <div class="n">9</div>
+                <div class="l">Robots on the network</div>
               </div>
               <div class="stat">
-                <div class="n">6</div>
-                <div class="l">Composable protocols</div>
+                <div class="n">8</div>
+                <div class="l">Sites on 3 continents</div>
+              </div>
+              <div class="stat">
+                <div class="n">5</div>
+                <div class="l">Protocol layers</div>
               </div>
             </div>
           </div>
@@ -1286,7 +1359,7 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
           </div>
           <div class="fact">
             <span class="k">Code</span>
-            <span class="v" style="color: var(--ink-secondary)">Coming soon</span>
+            <span class="v"><a href="https://github.com/pi-drg" target="_blank" rel="noopener" class="ext">github.com/pi-drg</a></span>
           </div>
           <a class="btn btn-primary sans" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Join DRG</a>
         </aside>
@@ -1304,7 +1377,7 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
         <p>All code, all hardware designs, all protocols — open source. Come build the coordination layer for the next generation of robots.</p>
         <div class="row">
           <a class="btn btn-primary" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Join DRG</a>
-          <span class="btn btn-secondary is-soon">Code coming soon</span>
+          <a class="btn btn-secondary" href="https://github.com/pi-drg" target="_blank" rel="noopener">Code on GitHub</a>
         </div>
       </div>
     </section>
@@ -1347,26 +1420,28 @@ C 774.552 420.499 774.552 579.273 676.970 676.855 Z"
 
           <div class="foot-col">
             <h4>Protocols</h4>
-            <a href="#stack">Identity</a>
-            <a href="#stack">MCP Gateway</a>
-            <a href="#stack">Marketplace</a>
-            <a href="#stack">Full spec</a>
+            <a class="ext" href="https://register.yakrobot.com" target="_blank" rel="noopener">Identity</a>
+            <a class="ext" href="https://github.com/pi-drg/yakrobot-identity" target="_blank" rel="noopener">Discovery</a>
+            <a class="ext" href="https://pay.yakrobot.com" target="_blank" rel="noopener">Payment</a>
+            <a class="ext" href="https://github.com/pi-drg/yakrobot-gateway" target="_blank" rel="noopener">MCP Gateway</a>
+            <a class="ext" href="https://github.com/YakRoboticsGarage/yakrover-marketplace" target="_blank" rel="noopener">Marketplace</a>
           </div>
 
           <div class="foot-col">
             <h4>Pages</h4>
             <a href="#stack">Protocol Stack</a>
             <a href="#platform">Platform</a>
-            <a href="#discovery">Discovery</a>
+            <a href="#discovery">YakRobot Network</a>
             <a href="#drg">The Group</a>
             <a href="/memo-space/">Space Economy Brief</a>
+            <a href="/robots-as-protocol-citizens/">Robots as Protocol Citizens Workshop</a>
           </div>
 
           <div class="foot-col">
             <h4>Links</h4>
             <a class="ext" href="https://protocol-institute.org/sigs/drg/" target="_blank" rel="noopener">Protocol Institute</a>
             <a class="ext" href="https://www.yakcollective.org/study-groups/yak-robotics-garage" target="_blank" rel="noopener">Yak Collective</a>
-            <span class="soon">Code · coming soon</span>
+            <a class="ext" href="https://github.com/pi-drg" target="_blank" rel="noopener">GitHub</a>
           </div>
         </div>
 
